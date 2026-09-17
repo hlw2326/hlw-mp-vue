@@ -68,7 +68,8 @@ export function getClient(): AxiosInstance {
 		baseURL: base,
 		timeout: currentOptions.timeout || 15000,
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'Accept': 'application/json'
 		}
 	})
 
