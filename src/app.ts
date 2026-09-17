@@ -3,8 +3,8 @@
  * 生命周期、Pinia、hlw 注入收敛在此。
  */
 import { createSSRApp, type App, type Component } from 'vue';
-import { hlw } from '@/hlw';
-import { request } from '@/utils/request';
+import { hlw } from './hlw';
+import { request } from './request';
 
 let _installed = false;
 
@@ -13,7 +13,7 @@ let _installed = false;
  * 
  * @example
  * ```ts
- * import { useApp } from '@hlw-uni/mp-vue';
+ * import { useApp } from '@hlw-mp/vue';
  * import App from './App.vue';
  * import { createPinia } from 'pinia';
  * 

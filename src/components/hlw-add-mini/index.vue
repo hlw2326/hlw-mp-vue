@@ -19,7 +19,7 @@
  * 会根据是否为自定义导航栏（custom），自动调整气泡浮动位置（避开胶囊按钮与状态栏）。
  */
 import { computed, ref, onMounted } from "vue";
-import { getDevice } from "../../utils/device";
+import { getDevice } from "../../request";
 
 defineOptions({ name: "HlwAddMini" });
 

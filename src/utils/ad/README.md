@@ -23,7 +23,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import type { AdRes } from "@hlw-uni/mp-vue";
+import type { AdRes } from "@hlw-mp/vue";
 
 const rewardUnitId = ref("adunit-xxx");
 
@@ -55,7 +55,7 @@ import {
     setRewardAd, 
     showRewardAd, 
     confirmRewardAd 
-} from "@hlw-uni/mp-vue";
+} from "@hlw-mp/vue";
 ```
 
 ### 插屏广告 (Interstitial Ad)

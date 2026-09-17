@@ -1,16 +1,11 @@
 /**
- * @hlw-uni/mp-vue 统一导出
- *
- * 2.0 起合并了原 @hlw-uni/mp-core 全部内容。
- * 业务方一处 import，无需再分包：
- *   import { useMsg, useTheme, ... } from "@hlw-uni/mp-vue";
- *
- * UI 组件（hlw-page / hlw-button / hlw-ad 等）走 easycom 自动注册，不在这里 export。
+ * @hlw-mp/vue 统一导出
  */
 
 // Core / 工具
 export * from "./core";
 export * from "./utils";
+export * from "./request";
 
 // 类型
 export type { HlwMenuItem } from "./components/hlw-menu/types";

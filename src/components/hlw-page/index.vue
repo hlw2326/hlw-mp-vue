@@ -67,7 +67,7 @@
  * </hlw-page>
  * ```
  */
-import { useTheme } from "@/core";
+import { useTheme } from "../../core";
 import { ref, computed } from "vue";
 
 const { fontSizeClass, fontFamilyClass } = useTheme();

@@ -239,7 +239,7 @@ export function confirmRewardAd(): Promise<boolean> {
 }
 
 /**
- * @deprecated 推荐直接从库导入独立函数使用 (例如：import { showRewardAd } from '@hlw-uni/mp-vue')
+ * @deprecated 推荐直接从库导入独立函数使用 (例如：import { showRewardAd } from '@hlw-mp/vue')
  */
 export function useHlwAd() {
     return {

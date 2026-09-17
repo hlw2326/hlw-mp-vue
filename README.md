@@ -1,4 +1,4 @@
-# @hlw-uni/mp-vue
+# @hlw-mp/vue
 
 <p align="center">
   <img src="https://img.shields.io/badge/vue-3.x-emerald.svg" alt="Vue 3">
@@ -16,7 +16,7 @@
 - 🚀 **响应式 & 声明式** — 全面拥抱 Vue 3 Composition API 与 `<script setup>`。
 - 📐 **完全类型安全** — 100% 采用 TypeScript 编写，提供精确的类型推导与卓越的 IDE 自动补全。
 - 🎨 **动态主题机制** — 基于 CSS 变量的极简主题管理，支持应用级与页面级动态刷新，自动更新系统导航栏配色。
-- 🔗 **统一导出机制** — 统一通过 `@hlw-uni/mp-vue` 单一出口导出，无需零散引入，支持高效的 Tree-shaking。
+- 🔗 **统一导出机制** — 统一通过 `@hlw-mp/vue` 单一出口导出，无需零散引入，支持高效的 Tree-shaking。
 - 🧩 **easycom 自动按需引入** — 完美融入 uni-app `easycom` 生态，UI 组件即写即用，零体积负担。
 - 🛠️ **清晰的架构分离** — 严格划分 `core/`（有状态生命周期 Hooks）与 `utils/`（纯无状态静态工具函数），杜绝代码逻辑耦合。
 
@@ -27,7 +27,7 @@
 ### 1. 安装组件库
 
 ```bash
-pnpm add @hlw-uni/mp-vue
+pnpm add @hlw-mp/vue
 ```
 
 > [!NOTE]
@@ -44,7 +44,7 @@ pnpm add @hlw-uni/mp-vue
   "easycom": {
     "autoscan": true,
     "custom": {
-      "^hlw-(.*)": "@hlw-uni/mp-vue/src/components/hlw-$1/index.vue"
+      "^hlw-(.*)": "@hlw-mp/vue/src/components/hlw-$1/index.vue"
     }
   },
   "pages": [
@@ -86,7 +86,7 @@ mp-vue/src/
 
 ```vue
 <script setup lang="ts">
-import { useTheme } from "@hlw-uni/mp-vue";
+import { useTheme } from "@hlw-mp/vue";
 
 // 获取当前主题、字号类名、字体类名，以及设置函数
 const { 
@@ -112,7 +112,7 @@ const {
 在 `App.vue` 初始化阶段，可以使用 `initTheme()` 设定初始主题：
 
 ```ts
-import { initTheme } from "@hlw-uni/mp-vue";
+import { initTheme } from "@hlw-mp/vue";
 
 onLaunch(() => {
   initTheme("mono-theme");
@@ -124,7 +124,7 @@ onLaunch(() => {
 封装并规整了小程序原生的 Toast、Loading 与 Promise 化的 Modal 确认弹窗。支持在 setup 内部使用 `useMsg()`，亦支持在非 setup 环境中通过全局 `hlw.$msg` 直接调用：
 
 ```ts
-import { useMsg, hlw } from "@hlw-uni/mp-vue";
+import { useMsg, hlw } from "@hlw-mp/vue";
 
 const msg = useMsg();
 
@@ -158,7 +158,7 @@ const handleDelete = async () => {
 
 ```vue
 <script setup lang="ts">
-import { useShare } from "@hlw-uni/mp-vue";
+import { useShare } from "@hlw-mp/vue";
 
 // 声明分享配置，自动劫持当前页面的分享与朋友圈按钮事件
 useShare({
@@ -175,7 +175,7 @@ useShare({
 
 ```vue
 <script setup lang="ts">
-import { useRefs } from "@hlw-uni/mp-vue";
+import { useRefs } from "@hlw-mp/vue";
 
 const { refs, setRef } = useRefs<any>();
 
@@ -211,7 +211,7 @@ import {
   reLaunch, 
   navigateBack, 
   navigateToMiniProgram 
-} from "@hlw-uni/mp-vue";
+} from "@hlw-mp/vue";
 
 // 保留当前页，跳转至指定路径
 navigateTo("/pages/detail/index?id=123");
@@ -241,7 +241,7 @@ navigateToMiniProgram("wxxxxxxxxx", {
 高性能的 HTTP 请求客户端，支持多拦截器链、自动携带设备头信息、对象服务化组织等。
 
 ```ts
-import { request, BaseService, ServicePrefix, ServiceNamespace } from "@hlw-uni/mp-vue";
+import { request, BaseService, ServiceNamespace } from "@hlw-mp/vue";
 
 // 1. 全局基础 URL 配置
 request.setBaseURL("https://api.hlw.com");
@@ -259,7 +259,6 @@ request.onRequest((config) => {
 const data = await request.get("/user/info");
 
 // 4. 面向服务组织封装（基类配合装饰器）
-@ServicePrefix("v1")
 @ServiceNamespace("order")
 class OrderService extends BaseService {
   getList(page: number) {
@@ -275,7 +274,7 @@ export const orderService = new OrderService();
 高度优化的插屏与激励视频广告助手，支持提前静默异步预加载、防止回调重叠、自动管理加载状态。
 
 ```ts
-import { setAdPopup, showAdPopup, setAdReward, showAdReward } from "@hlw-uni/mp-vue";
+import { setAdPopup, showAdPopup, setAdReward, showAdReward } from "@hlw-mp/vue";
 
 // 1. 插屏广告配置与延迟展示
 setAdPopup("adunit-popup-xxxx");
@@ -299,7 +298,7 @@ const res = await showAdReward(() => {
 标准化、可缓存的高效设备元数据获取。消除了不同端、不同版本小程序获取系统属性的 API 碎片化问题。
 
 ```ts
-import { getDevice, getDeviceQuery } from "@hlw-uni/mp-vue";
+import { getDevice, getDeviceQuery } from "@hlw-mp/vue";
 
 // 获取标准化设备数据结构
 const device = getDevice();
@@ -321,7 +320,7 @@ import {
   saveVideoUrl, 
   toQuery, 
   withQuery 
-} from "@hlw-uni/mp-vue";
+} from "@hlw-mp/vue";
 
 // 1. 剪贴板读取与写入
 await copy("复制的内容", true); // 第二参数决定是否弹出“复制成功”提示
@@ -357,7 +356,7 @@ const query = toQuery({ id: 1, name: "hlw", temp: null }); // "id=1&name=hlw"
 
 ## 📦 easycom UI 组件全景索引 (27个内置组件)
 
-以下为 `@hlw-uni/mp-vue` 内置的部分核心 UI 组件简表：
+以下为 `@hlw-mp/vue` 内置的部分核心 UI 组件简表：
 
 | 组件名称 | 目录定位 | 说明 |
 | :--- | :--- | :--- |

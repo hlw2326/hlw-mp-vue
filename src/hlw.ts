@@ -1,4 +1,4 @@
-import { useMsg } from '@/core/msg';
+import { useMsg } from './core/msg';
 
 /**
  * 全局 hlw 实例接口定义，聚合了框架的核心能力。
