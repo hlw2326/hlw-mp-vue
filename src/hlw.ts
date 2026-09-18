@@ -1,4 +1,4 @@
-import { useMsg } from "./core/msg";
+import { useMsg } from "./composables/msg";
 import {
     showPopupAd,
     showRewardAd,

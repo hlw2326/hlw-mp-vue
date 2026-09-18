@@ -2,8 +2,8 @@
  * @hlw-mp/vue 统一导出
  */
 
-// 核心能力与工具
-export * from "./core";
+// 组合函数与工具
+export * from "./composables";
 export * from "./utils";
 export * from "./request";
 export * from "./app";
