@@ -1,4 +1,4 @@
-import { user } from '../utils/user';
+import { user } from '../composables/user';
 import { getDevice } from '../utils/device';
 import { post, getHttpOptions } from './index';
 import type { ApiRes } from './types';

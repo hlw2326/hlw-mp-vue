@@ -1,4 +1,4 @@
-import { user } from '../utils/user'
+import { user } from '../composables/user'
 import { getDevice } from '../utils/device'
 import type { ApiRes, HttpOptions, RequestConfig, AxiosResponse, InterceptorHandler } from './types'
 
