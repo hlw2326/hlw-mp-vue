@@ -10,7 +10,7 @@
 defineOptions({ name: "HlwAvatarUpload" });
 
 const emit = defineEmits<{
-    (e: "onAvatar", filePath: string): void;
+    (event: "onAvatar", filePath: string): void;
 }>();
 
 function onChooseAvatar(event: any) {

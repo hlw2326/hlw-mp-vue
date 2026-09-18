@@ -30,8 +30,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const videoHeight = ref("450rpx");
 
-function onVideoLoadedMetadata(e: any) {
-    const { width, height } = e.detail || {};
+function onVideoLoadedMetadata(event: any) {
+    const { width, height } = event?.detail || {};
     if (width && height) {
         videoHeight.value = `${(height / width) * 750}rpx`;
     }

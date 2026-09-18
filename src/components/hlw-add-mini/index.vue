@@ -59,7 +59,7 @@ onMounted(() => {
                 return;
             }
         }
-    } catch (e) {
+    } catch (error) {
         // 容错
     }
 
@@ -75,7 +75,7 @@ onMounted(() => {
                     isCustomNav.value = true;
                 }
             }
-        } catch (e) {
+        } catch (error) {
             // 容错
         }
     }, 100);
@@ -89,7 +89,7 @@ const top = computed(() => {
                 // 胶囊底部高度 + 12px 作为气泡定位的顶部基准，避免箭头与胶囊重叠
                 return `${menuButtonInfo.bottom + 12}px`;
             }
-        } catch (e) {
+        } catch (error) {
             // 跨端环境不支持或报错时，执行安全降级计算
         }
         return `${info.statusBarHeight + 50}px`;
@@ -115,7 +115,7 @@ const arrowStyle = computed(() => {
                 right: `${rightOffset}px`,
             };
         }
-    } catch (e) {
+    } catch (error) {
         // 容错降级
     }
     return {};

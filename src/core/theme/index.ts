@@ -146,12 +146,12 @@ export function useTheme() {
     const fontFamily: Ref<string> = toRef(store, "fontFamily");
 
     const fontSizeClass: ComputedRef<string> = computed(() => {
-        const found = fontSizePresets.find((p) => p.id === store.fontSize);
+        const found = fontSizePresets.find((item) => item.id === store.fontSize);
         return found ? found.class : "font-size-standard";
     });
 
     const fontFamilyClass: ComputedRef<string> = computed(() => {
-        const found = fontFamilyPresets.find((p) => p.id === store.fontFamily);
+        const found = fontFamilyPresets.find((item) => item.id === store.fontFamily);
         return found ? found.class : "font-family-system";
     });
 

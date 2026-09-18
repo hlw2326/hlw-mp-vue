@@ -93,9 +93,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-    (e: "tap", event: unknown): void;
-    (e: "load", event: unknown): void;
-    (e: "error", event: unknown): void;
+    (event: "tap", payload: unknown): void;
+    (event: "load", payload: unknown): void;
+    (event: "error", payload: unknown): void;
 }>();
 
 const handleTap = (event: unknown) => {

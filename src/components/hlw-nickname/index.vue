@@ -44,7 +44,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-    (e: "onNick", nickname: string): void;
+    (event: "onNick", nickname: string): void;
 }>();
 
 const showEditNicknameDialog = ref(false);
@@ -59,13 +59,13 @@ function closeDialog() {
     showEditNicknameDialog.value = false;
 }
 
-function onNicknameInput(e: any) {
-    tempNickname.value = e.detail?.value || "";
+function onNicknameInput(event: any) {
+    tempNickname.value = event?.detail?.value || "";
 }
 
-function onNicknameBlur(e: any) {
+function onNicknameBlur(event: any) {
     // 微信小程序特有：点击键盘上方微信昵称 suggestion 时，会触发 blur 并带上值
-    const value = e.detail?.value || "";
+    const value = event?.detail?.value || "";
     if (value) {
         tempNickname.value = value;
     }

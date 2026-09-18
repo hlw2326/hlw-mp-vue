@@ -81,7 +81,7 @@ export async function uploadOss(
 					reject(new Error(`上传阿里云失败 (${res.statusCode}): ${res.data || ''}`));
 				}
 			},
-			fail: (err) => reject(new Error(err.errMsg || '上传阿里云失败'))
+			fail: (error) => reject(new Error(error.errMsg || '上传阿里云失败'))
 		});
 	});
 }

@@ -90,9 +90,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-    (e: "update:modelValue", value: boolean): void;
-    (e: "close"): void;
-    (e: "cta"): void;
+    (event: "update:modelValue", value: boolean): void;
+    (event: "close"): void;
+    (event: "cta"): void;
 }>();
 
 const visible = ref(false);
@@ -114,9 +114,9 @@ const clearTimers = () => {
 
 watch(
     () => props.modelValue,
-    (val) => {
+    (value) => {
         clearTimers();
-        if (val) {
+        if (value) {
             visible.value = true;
             openTimer = setTimeout(() => {
                 shown.value = true;

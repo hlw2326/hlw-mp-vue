@@ -51,8 +51,8 @@ export function withQuery(url: string, qs: string): string {
  */
 export function toQuery(data: Record<string, unknown>): string {
     return Object.entries(data)
-        .filter(([, val]) => val !== undefined && val !== null)
-        .map(([key, val]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(val))}`)
+        .filter(([, value]) => value !== undefined && value !== null)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
         .join("&");
 }
 
@@ -69,27 +69,27 @@ export function signText(url: string): string {
 
 /**
  * 安全转换未知值到数字类型，若转换失败则返回默认值。
- * @param val 待转换的值
- * @param def 默认数字
+ * @param value 待转换的值
+ * @param defaultValue 默认数字
  * @returns 转换后的数字或默认值
  */
-export function toNumber(val: unknown, def: number): number {
-    const next = Number(val);
-    return Number.isFinite(next) ? next : def;
+export function toNumber(value: unknown, defaultValue: number): number {
+    const next = Number(value);
+    return Number.isFinite(next) ? next : defaultValue;
 }
 
 /**
  * 安全转换未知值到布尔值类型，若转换失败则返回默认值。
  * 兼容特殊数值（如 0, "0", "false" 视为 false；1, "1", "true" 视为 true）。
- * @param val 待转换的值
- * @param def 默认布尔值
+ * @param value 待转换的值
+ * @param defaultValue 默认布尔值
  * @returns 转换后的布尔值或默认值
  */
-export function toBoolean(val: unknown, def: boolean): boolean {
-    if (typeof val === "boolean") return val;
-    if (val === 0 || val === "0" || val === "false") return false;
-    if (val === 1 || val === "1" || val === "true") return true;
-    return def;
+export function toBoolean(value: unknown, defaultValue: boolean): boolean {
+    if (typeof value === "boolean") return value;
+    if (value === 0 || value === "0" || value === "false") return false;
+    if (value === 1 || value === "1" || value === "true") return true;
+    return defaultValue;
 }
 
 /**
@@ -155,8 +155,8 @@ export function saveImage(path: string): Promise<boolean> {
                 uni.showToast({ title: "保存成功", icon: "success" });
                 resolve(true);
             },
-            fail: (err) => {
-                const msg = String(err.errMsg || "");
+            fail: (error) => {
+                const msg = String(error.errMsg || "");
                 if (msg.includes("auth deny") || msg.includes("authorize")) {
                     auth();
                 } else {
@@ -182,8 +182,8 @@ export function saveVideoFile(path: string): Promise<boolean> {
                 uni.showToast({ title: "保存成功", icon: "success" });
                 resolve(true);
             },
-            fail: (err) => {
-                const msg = String(err.errMsg || "");
+            fail: (error) => {
+                const msg = String(error.errMsg || "");
                 if (msg.includes("auth deny") || msg.includes("authorize")) {
                     auth();
                 } else {
@@ -213,7 +213,7 @@ export function download(opt: DownloadOpt): Promise<DownloadRes> {
                     resolve({ ok: false, code: res.statusCode, msg: `下载失败，状态码：${res.statusCode}` });
                 }
             },
-            fail: (err) => resolve({ ok: false, msg: err.errMsg }),
+            fail: (error) => resolve({ ok: false, msg: error.errMsg }),
         });
 
         if (opt.progress) {
@@ -278,35 +278,35 @@ export async function saveVideoUrl(url: string, progress?: (value: number) => vo
 
 /**
  * 从格式化的字符串中解析出数字类型（如去除千分位逗号等）。
- * @param valStr 待解析的字符串
+ * @param valueString 待解析的字符串
  * @returns 解析出的数字
  */
-export function getNumber(valStr: string): number {
-    return parseFloat((valStr || "").replace(/,/g, "")) || 0;
+export function getNumber(valueString: string): number {
+    return parseFloat((valueString || "").replace(/,/g, "")) || 0;
 }
 
 /**
  * 格式化大数值，如 12345 转换为 1.2w。
- * @param val 待转换的值（数值或字符串）
+ * @param value 待转换的值（数值或字符串）
  * @returns 格式化后的字符串
  */
-export function formatConvertNumber(val: number | string): string {
-    const num = parseFloat(String(val)) || 0;
+export function formatConvertNumber(value: number | string): string {
+    const num = parseFloat(String(value)) || 0;
     if (num >= 10000) {
         return (num / 10000).toFixed(1) + "w";
     }
-    return String(val);
+    return String(value);
 }
 
 /**
  * 兼容性的 requestAnimationFrame 封装，支持小程序与 H5 环境。
- * @param cb 回调函数
+ * @param callback 回调函数
  */
-export function requestAnimFrame(cb: () => void): void {
+export function requestAnimFrame(callback: () => void): void {
     if (typeof requestAnimationFrame !== "undefined") {
-        requestAnimationFrame(cb);
+        requestAnimationFrame(callback);
     } else {
-        setTimeout(cb, 16);
+        setTimeout(callback, 16);
     }
 }
 

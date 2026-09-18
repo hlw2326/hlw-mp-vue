@@ -85,9 +85,9 @@ const emit = defineEmits<{
 
 const keyword = computed({
     get: () => (props.value !== "" ? props.value : (props.modelValue || "")),
-    set: (val: string) => {
-        emit("update:modelValue", val);
-        emit("update:value", val);
+    set: (value: string) => {
+        emit("update:modelValue", value);
+        emit("update:value", value);
     },
 });
 
@@ -140,18 +140,18 @@ function handleSearch(): void {
 }
 
 function onConfirm(event: any): void {
-    const val = event?.detail?.value ?? keyword.value;
-    keyword.value = val;
-    emit("search", val);
+    const value = event?.detail?.value ?? keyword.value;
+    keyword.value = value;
+    emit("search", value);
 }
 
 function onPaste(): void {
     uni.getClipboardData({
         success: (res: any) => {
-            const val = res?.data?.trim();
-            if (val) {
-                keyword.value = val;
-                emit("paste", val);
+            const value = res?.data?.trim();
+            if (value) {
+                keyword.value = value;
+                emit("paste", value);
                 toast("已粘贴剪贴板内容");
             } else {
                 toast("剪贴板为空");

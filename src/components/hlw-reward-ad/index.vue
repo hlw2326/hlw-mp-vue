@@ -19,7 +19,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-    (e: "close", res: HlwRewardAdResult): void;
+    (event: "close", result: HlwRewardAdResult): void;
 }>();
 
 // 点击锁定状态，防止连续多次点击重复触发广告
@@ -82,15 +82,15 @@ async function playRewardAdFlow(): Promise<void> {
                 });
             }
         }
-    } catch (e) {
+    } catch (error) {
         hide();
         destroyRewardAd(props.unitId);
-        console.error("[HlwRewardAd] Failed to show reward ad:", e);
+        console.error("[HlwRewardAd] Failed to show reward ad:", error);
         emit("close", {
             success: false,
             isEnded: false,
             loadFailed: true,
-            err: e,
+            err: error,
         });
     }
 }

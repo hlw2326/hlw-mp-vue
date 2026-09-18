@@ -43,14 +43,14 @@
             <!-- 模式：笔 / 圈 / 方 / 移动 -->
             <view class="modes">
                 <view
-                    v-for="m in MODES"
-                    :key="m.value"
+                    v-for="modeItem in MODES"
+                    :key="modeItem.value"
                     class="mode"
-                    :class="{ 'mode--active': m.value === mode }"
+                    :class="{ 'mode--active': modeItem.value === mode }"
                     hover-class="mode--hover"
-                    @tap="mode = m.value"
+                    @tap="mode = modeItem.value"
                 >
-                    <span :class="m.icon" class="mode-icon" />
+                    <span :class="modeItem.icon" class="mode-icon" />
                 </view>
             </view>
 
@@ -58,30 +58,30 @@
             <view class="tools">
                 <view class="colors">
                     <view
-                        v-for="c in COLORS"
-                        :key="c"
+                        v-for="colorItem in COLORS"
+                        :key="colorItem"
                         class="color"
-                        :class="{ 'color--active': c === color }"
-                        :style="{ background: c }"
-                        @tap="color = c"
+                        :class="{ 'color--active': colorItem === color }"
+                        :style="{ background: colorItem }"
+                        @tap="color = colorItem"
                     >
-                        <span v-if="c === color" class="i-fa6-solid-check color-check" />
+                        <span v-if="colorItem === color" class="i-fa6-solid-check color-check" />
                     </view>
                 </view>
 
                 <view class="sizes">
                     <view
-                        v-for="s in SIZES"
-                        :key="s.value"
+                        v-for="sizeItem in SIZES"
+                        :key="sizeItem.value"
                         class="size"
-                        :class="{ 'size--active': s.value === lineWidth }"
-                        @tap="lineWidth = s.value"
+                        :class="{ 'size--active': sizeItem.value === lineWidth }"
+                        @tap="lineWidth = sizeItem.value"
                     >
                         <view
                             class="size-dot"
                             :style="{
-                                width: s.value * 2 + 'rpx',
-                                height: s.value * 2 + 'rpx',
+                                width: sizeItem.value * 2 + 'rpx',
+                                height: sizeItem.value * 2 + 'rpx',
                                 background: color,
                             }"
                         />
@@ -234,33 +234,33 @@ function applyPenStyle(strokeColor: string, width: number) {
     ctx.lineJoin = "round";
 }
 
-function renderStroke(s: Stroke) {
+function renderStroke(strokeItem: Stroke) {
     if (!ctx) return;
-    applyPenStyle(s.color, s.width);
+    applyPenStyle(strokeItem.color, strokeItem.width);
     // 笔画存的是页面坐标，渲染时减掉当前 scrollTop 转回视口坐标
     const dy = -getScrollTop();
-    if (s.type === "pen") {
+    if (strokeItem.type === "pen") {
         ctx.beginPath();
-        s.points.forEach((p, i) => {
-            if (i === 0) ctx.moveTo(p.x, p.y + dy);
-            else ctx.lineTo(p.x, p.y + dy);
+        strokeItem.points.forEach((point, index) => {
+            if (index === 0) ctx.moveTo(point.x, point.y + dy);
+            else ctx.lineTo(point.x, point.y + dy);
         });
         ctx.stroke();
-    } else if (s.type === "ellipse") {
-        const cx = s.x + s.w / 2;
-        const cy = s.y + s.h / 2 + dy;
+    } else if (strokeItem.type === "ellipse") {
+        const cx = strokeItem.x + strokeItem.w / 2;
+        const cy = strokeItem.y + strokeItem.h / 2 + dy;
         ctx.beginPath();
-        ctx.ellipse(cx, cy, s.w / 2, s.h / 2, 0, 0, Math.PI * 2);
+        ctx.ellipse(cx, cy, strokeItem.w / 2, strokeItem.h / 2, 0, 0, Math.PI * 2);
         ctx.stroke();
-    } else if (s.type === "rect") {
-        ctx.strokeRect(s.x, s.y + dy, s.w, s.h);
+    } else if (strokeItem.type === "rect") {
+        ctx.strokeRect(strokeItem.x, strokeItem.y + dy, strokeItem.w, strokeItem.h);
     }
 }
 
 function redraw() {
     if (!ctx || !canvas) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (const s of strokes.value) renderStroke(s);
+    for (const strokeItem of strokes.value) renderStroke(strokeItem);
 }
 
 function previewShape() {
@@ -283,36 +283,36 @@ function previewShape() {
 
 /** 点 (px, py) 是否在某个形状内；返回最上层（数组末尾优先）的索引，没命中返回 -1。pen 笔画跳过。 */
 function hitTest(px: number, py: number): number {
-    for (let i = strokes.value.length - 1; i >= 0; i--) {
-        const s = strokes.value[i];
-        if (s.type === "rect") {
-            if (px >= s.x && px <= s.x + s.w && py >= s.y && py <= s.y + s.h) return i;
-        } else if (s.type === "ellipse") {
-            const rx = s.w / 2;
-            const ry = s.h / 2;
+    for (let index = strokes.value.length - 1; index >= 0; index--) {
+        const strokeItem = strokes.value[index];
+        if (strokeItem.type === "rect") {
+            if (px >= strokeItem.x && px <= strokeItem.x + strokeItem.w && py >= strokeItem.y && py <= strokeItem.y + strokeItem.h) return index;
+        } else if (strokeItem.type === "ellipse") {
+            const rx = strokeItem.w / 2;
+            const ry = strokeItem.h / 2;
             if (rx <= 0 || ry <= 0) continue;
-            const nx = (px - (s.x + rx)) / rx;
-            const ny = (py - (s.y + ry)) / ry;
-            if (nx * nx + ny * ny <= 1) return i;
+            const nx = (px - (strokeItem.x + rx)) / rx;
+            const ny = (py - (strokeItem.y + ry)) / ry;
+            if (nx * nx + ny * ny <= 1) return index;
         }
     }
     return -1;
 }
 
-function onTouchStart(e: any) {
+function onTouchStart(event: any) {
     if (!ctx) return;
-    const t = e.touches?.[0];
-    if (!t) return;
-    const px = t.x;
-    const py = t.y + getScrollTop();
+    const touch = event.touches?.[0];
+    if (!touch) return;
+    const px = touch.x;
+    const py = touch.y + getScrollTop();
 
     if (mode.value === "move") {
         const idx = hitTest(px, py);
         if (idx < 0) return;
-        const s = strokes.value[idx] as ShapeStroke;
+        const strokeItem = strokes.value[idx] as ShapeStroke;
         dragIndex = idx;
-        dragOffsetX = px - s.x;
-        dragOffsetY = py - s.y;
+        dragOffsetX = px - strokeItem.x;
+        dragOffsetY = py - strokeItem.y;
         drawing = true;
         return;
     }
@@ -325,28 +325,28 @@ function onTouchStart(e: any) {
         currentPoints = [{ x: px, y: py }];
         applyPenStyle(color.value, lineWidth.value);
         ctx.beginPath();
-        ctx.moveTo(t.x, t.y);
+        ctx.moveTo(touch.x, touch.y);
     }
 }
 
-function onTouchMove(e: any) {
+function onTouchMove(event: any) {
     if (!drawing || !ctx) return;
-    const t = e.touches?.[0];
-    if (!t) return;
-    const px = t.x;
-    const py = t.y + getScrollTop();
+    const touch = event.touches?.[0];
+    if (!touch) return;
+    const px = touch.x;
+    const py = touch.y + getScrollTop();
 
     if (mode.value === "move") {
         if (dragIndex < 0) return;
-        const s = strokes.value[dragIndex] as ShapeStroke;
-        s.x = px - dragOffsetX;
-        s.y = py - dragOffsetY;
+        const strokeItem = strokes.value[dragIndex] as ShapeStroke;
+        strokeItem.x = px - dragOffsetX;
+        strokeItem.y = py - dragOffsetY;
         redraw();
         return;
     }
 
     if (mode.value === "pen") {
-        ctx.lineTo(t.x, t.y);
+        ctx.lineTo(touch.x, touch.y);
         ctx.stroke();
         currentPoints.push({ x: px, y: py });
         return;

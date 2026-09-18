@@ -130,7 +130,7 @@ export interface AdRes {
     /** 激励视频是否完全播放完毕 (仅激励视频有此属性) */
     isEnded: boolean;
     /** 加载或展示失败时的错误对象 */
-    err?: any;
+    error?: any;
 }
 
 // 缓存不同 Unit ID 的广告实例，防止重复创建导致内存泄露或回调叠加
@@ -180,8 +180,8 @@ export function setPopupAd(adId: string, done?: (ok: boolean) => void): boolean 
                 if (activePopupId === adId) popupCallback?.(true);
             });
             adInstances.set(adId, ad);
-        } catch (e) {
-            console.error("[Ad] Interstitial creation failed:", e);
+        } catch (error) {
+            console.error("[Ad] Interstitial creation failed:", error);
             return false;
         }
     }
@@ -243,10 +243,10 @@ export function setRewardAd(adId: string, done?: (res: AdRes) => void): Promise<
         try {
             const ad = uni.createRewardedVideoAd({ adUnitId: adId });
             ad.onLoad?.(() => console.log(`[Ad] Rewarded video loaded: ${adId}`));
-            ad.onError?.((err: any) => {
-                console.error("[Ad] Rewarded video load error:", err);
+            ad.onError?.((errorResult: any) => {
+                console.error("[Ad] Rewarded video load error:", errorResult);
                 if (activeRewardId === adId) {
-                    resolveReward({ success: false, isEnded: false, err });
+                    resolveReward({ success: false, isEnded: false, error: errorResult });
                 }
             });
             ad.onClose?.((res: { isEnded?: boolean }) => {
@@ -260,9 +260,9 @@ export function setRewardAd(adId: string, done?: (res: AdRes) => void): Promise<
                 }
             });
             adInstances.set(adId, ad);
-        } catch (e) {
-            console.error("[Ad] Rewarded video creation failed:", e);
-            resolveReward({ success: false, isEnded: false, err: e });
+        } catch (error) {
+            console.error("[Ad] Rewarded video creation failed:", error);
+            resolveReward({ success: false, isEnded: false, error });
         }
     }
     return rewardPromise;
@@ -300,12 +300,12 @@ export function showRewardAd(onShowSuccess?: () => void): Promise<AdRes> {
                         })
                         .catch((err: any) => {
                             console.error("[Ad] Rewarded video show error:", err);
-                            resolveReward({ success: false, isEnded: false, err });
+                            resolveReward({ success: false, isEnded: false, error: err });
                         });
                 })
                 .catch((err: any) => {
                     console.error("[Ad] Rewarded video load error:", err);
-                    resolveReward({ success: false, isEnded: false, err });
+                    resolveReward({ success: false, isEnded: false, error: err });
                 });
         });
 
@@ -354,16 +354,3 @@ export function confirmRewardAd(): Promise<boolean> {
     });
 }
 
-/**
- * @deprecated 推荐直接从库导入独立函数使用 (例如：import { showRewardAd } from '@hlw-mp/vue')
- */
-export function useHlwAd() {
-    return {
-        setPopupAd,
-        showPopupAd,
-        setRewardAd,
-        showRewardAd,
-        confirmRewardAd,
-        destroyRewardAd,
-    };
-}

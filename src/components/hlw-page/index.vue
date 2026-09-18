@@ -131,8 +131,8 @@ const navbarHeight = computed(() => {
         if (menuButtonInfo && typeof menuButtonInfo.bottom === "number" && menuButtonInfo.bottom > 0) {
             headerHeight = menuButtonInfo.bottom - statusBarHeight + 6;
         }
-    } catch (e) {
-        console.warn(e);
+    } catch (error) {
+        console.warn(error);
     }
     return statusBarHeight + headerHeight;
 });

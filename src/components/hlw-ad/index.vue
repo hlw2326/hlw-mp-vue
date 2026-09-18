@@ -69,8 +69,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-    (e: "load", event: any): void;
-    (e: "error", event: any): void;
+    (event: "load", payload: any): void;
+    (event: "error", payload: any): void;
 }>();
 
 const resolvedUnitId = computed(() => {

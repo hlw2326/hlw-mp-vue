@@ -32,8 +32,8 @@ function injectTap(vnode: VNode, binding: DirectiveBinding) {
     const props = vnode.props as Record<string, any>;
     const prev = props.onTap;
 
-    props.onTap = (e: any) => {
-        prev?.(e);
+    props.onTap = (event: any) => {
+        prev?.(event);
         const value = binding.value;
         if (value == null || value === '') return;
         copyText(String(value));
@@ -49,13 +49,13 @@ export const vCopy: Directive = {
     /**
      * 在指令创建时注入点击事件拦截器。
      */
-    created(el: any, binding: DirectiveBinding, vnode: VNode) {
+    created(element: any, binding: DirectiveBinding, vnode: VNode) {
         injectTap(vnode, binding);
     },
     /**
      * 在绑定值更新前重新注入点击事件拦截器，以获取最新的绑定值。
      */
-    beforeUpdate(el: any, binding: DirectiveBinding, vnode: VNode) {
+    beforeUpdate(element: any, binding: DirectiveBinding, vnode: VNode) {
         injectTap(vnode, binding);
     },
 };

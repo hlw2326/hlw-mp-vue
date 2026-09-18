@@ -44,8 +44,8 @@ export function useRefs() {
      * @param key 标识该子项的唯一 Key
      * @returns 用于 ref 绑定的回调函数
      */
-    const setRefs = (key: string) => (el: any) => {
-        if (el) refs.value[key] = el;
+    const setRefs = (key: string) => (element: any) => {
+        if (element) refs.value[key] = element;
     };
 
     return { refs, setRefs };

@@ -38,8 +38,8 @@ const statusBarHeight: number = uni.getSystemInfoSync()?.statusBarHeight || 0;
 let menuButtonInfo: any = null;
 try {
     menuButtonInfo = uni.getMenuButtonBoundingClientRect();
-} catch (e) {
-    console.warn(e);
+} catch (error) {
+    console.warn(error);
 }
 
 const props = defineProps({
@@ -106,7 +106,7 @@ const navbarHeight = ref(headerHeight.value + statusBarHeight);
 
 function tapBack() {
     uni.navigateBack({
-        fail: (err) => {
+        fail: (error) => {
             uni.reLaunch({
                 url: "/pages/index/index",
             });

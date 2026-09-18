@@ -70,7 +70,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-    (e: "tap"): void;
+    (event: "tap"): void;
 }>();
 
 const pageCtx = inject<PageScrollContext | null>("hlwPageScroll", null);
