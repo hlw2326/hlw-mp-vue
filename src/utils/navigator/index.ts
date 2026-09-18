@@ -1,9 +1,8 @@
-/**
- * uni-app 路由跳转工具
- * 封装并统一原生的页面跳转、重定向、Switch Tab、返回、以及打开外部小程序或 WebView 等方法。
- */
+import { hlw } from "../../hlw";
 
-/** 页面跳转类型，支持微信小程序的各类路由动作与 WebView/小程序跳转 */
+/**
+ * 路由动作型
+ */
 export type NavigateType =
     | "navigateTo"
     | "redirectTo"
@@ -15,20 +14,20 @@ export type NavigateType =
     | (string & {});
 
 /**
- * 路由跳转的额外配置选项。
+ * 路由配置项
  */
 export interface NavigateOptions {
-    /** 发生失败时是否静默不抛出/显示 Toast 提示，默认 false */
+    /** 静默不提示 */
     silent?: boolean;
-    /** 页面跳转失败时的回调 */
+    /** 跳转失败调 */
     onFail?: (message: string) => void;
-    /** 返回上级页面的层数，仅在 type="navigateBack" 时生效，默认 1 */
+    /** 返回上级数 */
     delta?: number;
-    /** 打开外部小程序时的页面路径，仅在 type="miniprogram" 时生效 */
+    /** 外部小路径 */
     path?: string;
-    /** 打开外部小程序的环境版本 (开发/体验/正式)，仅在 type="miniprogram" 时生效 */
+    /** 外部环境版 */
     envVersion?: "develop" | "trial" | "release";
-    /** 传递给目标小程序的额外数据 */
+    /** 额外附带数 */
     extraData?: Record<string, unknown>;
 }
 
@@ -39,7 +38,7 @@ type UniFail = { errMsg?: string };
  */
 function fail(message: string, options: NavigateOptions = {}) {
     if (!options.silent) {
-        uni.showToast({ title: message, icon: "none" });
+        hlw.$msg.toast(message);
     }
     options.onFail?.(message);
 }

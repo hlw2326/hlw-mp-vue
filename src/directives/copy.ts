@@ -6,17 +6,17 @@
  *   <text v-copy="userId">{{ userId }}</text>
  */
 import type { Directive, DirectiveBinding, VNode } from 'vue';
+import { hlw } from '../hlw';
 
 /**
- * 将文本复制到系统剪贴板，并显示成功提示。
- * 
- * @param data 待复制的字符串
+ * 复制文本内容
+ * @param data 待复制文本
  */
 function copyText(data: string) {
     uni.setClipboardData({
         data,
-        showToast: false, // 禁用系统默认 Toast 提示，使用自定义的无图标 Toast
-        success: () => uni.showToast({ title: '复制成功', icon: 'none', duration: 1500 }),
+        showToast: false,
+        success: () => hlw.$msg.toast('复制成功'),
     });
 }
 

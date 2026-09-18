@@ -36,8 +36,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-
-declare const uni: any;
+import { hlw } from "../../hlw";
 
 interface Props {
     modelValue?: string;
@@ -117,15 +116,6 @@ const textStyle = computed(() => {
     return styles;
 });
 
-function toast(message: string): void {
-    const hlwGlobal = (globalThis as any).hlw;
-    if (typeof hlwGlobal?.$msg?.toast === "function") {
-        hlwGlobal.$msg.toast(message);
-    } else {
-        uni.showToast({ title: message, icon: "none" });
-    }
-}
-
 function onInput(event: any): void {
     keyword.value = event?.detail?.value ?? "";
 }
@@ -152,13 +142,13 @@ function onPaste(): void {
             if (value) {
                 keyword.value = value;
                 emit("paste", value);
-                toast("已粘贴剪贴板内容");
+                hlw.$msg.toast("已粘贴剪贴板内容");
             } else {
-                toast("剪贴板为空");
+                hlw.$msg.toast("剪贴板为空");
             }
         },
         fail: () => {
-            toast("读取剪贴板失败");
+            hlw.$msg.toast("读取剪贴板失败");
         },
     });
 }

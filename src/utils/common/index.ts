@@ -3,6 +3,8 @@
  * 包含查询字符串参数拼接、数据转换、剪贴板交互、授权及图片/视频等多媒体资源下载保存。
  */
 
+import { hlw } from "../../hlw";
+
 /**
  * 文件下载选项配置接口。
  */
@@ -105,7 +107,7 @@ export function copy(text: string, tip = true): Promise<boolean> {
             showToast: false,
             success: () => {
                 if (tip) {
-                    uni.showToast({ title: "复制成功", icon: "none", duration: 1500 });
+                    hlw.$msg.toast("复制成功");
                 }
                 resolve(true);
             },
@@ -152,7 +154,7 @@ export function saveImage(path: string): Promise<boolean> {
         uni.saveImageToPhotosAlbum({
             filePath: path,
             success: () => {
-                uni.showToast({ title: "保存成功", icon: "success" });
+                hlw.$msg.success("保存成功");
                 resolve(true);
             },
             fail: (error) => {
@@ -160,7 +162,7 @@ export function saveImage(path: string): Promise<boolean> {
                 if (msg.includes("auth deny") || msg.includes("authorize")) {
                     auth();
                 } else {
-                    uni.showToast({ title: "保存失败", icon: "none" });
+                    hlw.$msg.toast("保存失败");
                 }
                 resolve(false);
             },
@@ -179,7 +181,7 @@ export function saveVideoFile(path: string): Promise<boolean> {
         uni.saveVideoToPhotosAlbum({
             filePath: path,
             success: () => {
-                uni.showToast({ title: "保存成功", icon: "success" });
+                hlw.$msg.success("保存成功");
                 resolve(true);
             },
             fail: (error) => {
@@ -187,7 +189,7 @@ export function saveVideoFile(path: string): Promise<boolean> {
                 if (msg.includes("auth deny") || msg.includes("authorize")) {
                     auth();
                 } else {
-                    uni.showToast({ title: "保存失败", icon: "none" });
+                    hlw.$msg.toast("保存失败");
                 }
                 resolve(false);
             },
@@ -233,19 +235,19 @@ export function download(opt: DownloadOpt): Promise<DownloadRes> {
  */
 export async function saveImageUrl(url: string, progress?: (value: number) => void): Promise<boolean> {
     try {
-        uni.showLoading({ title: "下载中...", mask: true });
+        hlw.$msg.showLoading("下载中...");
         const res = await download({ url, progress: progress ? (value) => progress(value) : undefined });
-        uni.hideLoading();
+        hlw.$msg.hideLoading();
 
         if (!res.ok || !res.path) {
-            uni.showToast({ title: res.msg || "下载失败", icon: "none" });
+            hlw.$msg.toast(res.msg || "下载失败");
             return false;
         }
 
         return await saveImage(res.path);
     } catch {
-        uni.hideLoading();
-        uni.showToast({ title: "操作失败", icon: "none" });
+        hlw.$msg.hideLoading();
+        hlw.$msg.toast("操作失败");
         return false;
     }
 }
@@ -259,19 +261,19 @@ export async function saveImageUrl(url: string, progress?: (value: number) => vo
  */
 export async function saveVideoUrl(url: string, progress?: (value: number) => void): Promise<boolean> {
     try {
-        uni.showLoading({ title: "下载中...", mask: true });
+        hlw.$msg.showLoading("下载中...");
         const res = await download({ url, progress: progress ? (value) => progress(value) : undefined });
-        uni.hideLoading();
+        hlw.$msg.hideLoading();
 
         if (!res.ok || !res.path) {
-            uni.showToast({ title: res.msg || "下载失败", icon: "none" });
+            hlw.$msg.toast(res.msg || "下载失败");
             return false;
         }
 
         return await saveVideoFile(res.path);
     } catch {
-        uni.hideLoading();
-        uni.showToast({ title: "操作失败", icon: "none" });
+        hlw.$msg.hideLoading();
+        hlw.$msg.toast("操作失败");
         return false;
     }
 }

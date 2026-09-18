@@ -1,5 +1,6 @@
 import { user } from '../composables/user'
 import { getDevice } from '../utils/device'
+import { hlw } from '../hlw'
 import type { ApiRes, HttpOptions, RequestConfig, AxiosResponse, InterceptorHandler } from './types'
 
 /**
@@ -156,14 +157,6 @@ let currentOptions: HttpOptions = {}
 let lastToastTime = 0
 
 /**
- * 提示消息
- * @param message 错误提示文
- */
-function toast(message: string): void {
-	uni.showToast({ title: message, icon: 'none' })
-}
-
-/**
  * 处理未授权
  * @param message 错误提示文
  * @param callback 异常回调函
@@ -172,7 +165,7 @@ function handleUnauthorized(message: string, callback?: (msg: string) => void): 
 	const now = Date.now()
 	if (now - lastToastTime > 3000) {
 		lastToastTime = now
-		toast(message)
+		hlw.$msg.toast(message)
 	}
 	if (callback) {
 		callback(message)
