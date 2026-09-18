@@ -1,24 +1,24 @@
 # 广告模块 (Ad Utility & Component)
 
-提供微信小程序**插屏广告 (Interstitial Ad)** 与 **激励视频广告 (Rewarded Video Ad)** 的注册、预加载与展示播放能力，并提供了开箱即用的高层封装组件 `<hlw-reward-ad>`。
+提供微信小程序**插屏广告 (Interstitial Ad)** 与 **激励视频广告 (Rewarded Video Ad)** 的注册、预加载与展示播放能力，并提供了开箱即用的高层封装组件 `<hlw-ad>`。
 
 ---
 
-## 1. 推荐：高层组件 `<hlw-reward-ad>`
+## 1. 推荐：高层组件 `<hlw-ad type="reward">`
 
 组件内部全面封装并接管了激励视频广告的完整生命周期管理：
-* **自动预加载**：组件挂载或广告 ID（`unitId`）变更时，在后台自动完成首帧广告的静默加载。
+* **自动读取全局配置**：无需显式传递 `unit-id`，底层自动匹配全局广告配置。
 * **Loading 状态处理**：拉起广告时自动弹出全局模态 Loading，防止穿透及多重点击。
 * **智能断点续看 (中途退出拦截)**：当用户中途关闭广告时，组件内会自动拦截并弹出二级确认对话框（“继续观看”与“取消”），选择继续将自动递归重新拉起播放。
 * **关闭后自动滚加载**：当一次广告播放流关闭（完成或中途取消）后，组件立即在后台重新静默预加载下一个广告，保证下一次秒开。
 
-### 引入组件 (easycom / 直接引用)
+### 使用示例
 
 ```html
 <template>
-    <hlw-reward-ad :unit-id="rewardUnitId" @onHandle="handleRewardAd">
-        <hlw-button type="primary" round>点击观看广告获取金币</hlw-button>
-    </hlw-reward-ad>
+    <hlw-ad type="reward" @close="handleRewardAd">
+        <button class="btn">点击观看广告获取金币</button>
+    </hlw-ad>
 </template>
 
 <script setup lang="ts">
