@@ -23,13 +23,13 @@
         <ad
             v-if="type === 'banner'"
             type="banner"
-            :unit-id="unitId"
+            :unit-id="resolvedUnitId"
             @load="onLoad"
             @error="onError"
         />
         <ad-custom
             v-else
-            :unit-id="unitId"
+            :unit-id="resolvedUnitId"
             @load="onLoad"
             @error="onError"
         />
@@ -38,17 +38,18 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { getAdUnitId } from "../../utils/ad";
 
 defineOptions({ name: "HlwAd" });
 
 type GridPlacement = "left-top" | "right-top" | "left-middle" | "right-middle" | "left-bottom" | "right-bottom" | "center";
 
 interface Props {
-    /** 广告类型 — 仅展示型（banner / grid / custom） */
-    type: "banner" | "grid" | "custom";
-    /** 微信广告单元 id；空字符串 → 不渲染 */
-    unitId: string;
-    /** grid 广告悬浮位置 */
+    /** 广告类型 — 仅展示型（banner / grid / custom），默认 custom */
+    type?: "banner" | "grid" | "custom";
+    /** 微信广告单元 id；若未传则自动根据 type 从全局广告配置解析 */
+    unitId?: string;
+    /** grid 广告悬浮位置，默认 center */
     placement?: GridPlacement;
     /** 自定义样式（合并到根元素） */
     customStyle?: string;
@@ -59,6 +60,8 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+    type: "custom",
+    unitId: "",
     placement: "center",
     customStyle: "",
     customClass: "",
@@ -70,8 +73,13 @@ const emit = defineEmits<{
     (e: "error", event: any): void;
 }>();
 
+const resolvedUnitId = computed(() => {
+    if (props.unitId) return props.unitId;
+    return getAdUnitId(props.type);
+});
+
 /** 有 unitId 才渲染 */
-const visible = computed(() => !!props.unitId);
+const visible = computed(() => !!resolvedUnitId.value);
 const style = computed(() => {
     const styles: string[] = [];
     if (props.type !== "grid" && props.radius) {

@@ -3,7 +3,123 @@
  * 提供插屏广告 (Interstitial Ad) 与激励视频广告 (Rewarded Video Ad) 的注册、缓存与展示能力。
  */
 
+import { computed, type ComputedRef } from "vue";
+
 declare const uni: any;
+
+/**
+ * 广告配置表
+ */
+export interface AdConfig {
+    adGlobalEnabled?: number | boolean;
+    adEnabledBanner?: number | boolean;
+    adEnabledGrid?: number | boolean;
+    adEnabledCustom?: number | boolean;
+    adEnabledVideo?: number | boolean;
+    adEnabledReward?: number | boolean;
+    adEnabledPopup?: number | boolean;
+    bannerUnitId?: string;
+    gridUnitId?: string;
+    customUnitId?: string;
+    videoUnitId?: string;
+    rewardUnitId?: string;
+    popupUnitId?: string;
+    vipNoAd?: number | boolean;
+    [key: string]: any;
+}
+
+export type AdConfigProvider = () => AdConfig;
+
+let currentAdConfigProvider: AdConfigProvider | null = null;
+
+/**
+ * 配置广告源
+ * @param provider 广告配置源
+ */
+export function setupAd(provider: AdConfigProvider | AdConfig): void {
+    if (typeof provider === "function") {
+        currentAdConfigProvider = provider;
+    } else {
+        currentAdConfigProvider = () => provider;
+    }
+}
+
+/**
+ * 读取广告配
+ * @returns 广告配置项
+ */
+export function getAdConfig(): AdConfig {
+    if (currentAdConfigProvider) {
+        return currentAdConfigProvider() || {};
+    }
+    try {
+        if (typeof uni !== "undefined" && uni.getStorageSync) {
+            const saved = uni.getStorageSync("config");
+            if (saved?.ad) return saved.ad;
+        }
+    } catch {}
+    return {};
+}
+
+/**
+ * 解析单元号
+ * @param type 广告类型值
+ * @returns 广告单元码
+ */
+export function getAdUnitId(type: "banner" | "grid" | "custom" | "video" | "reward" | "popup" = "custom"): string {
+    const config = getAdConfig();
+    const isGlobalEnabled = config.adGlobalEnabled === undefined || config.adGlobalEnabled === 1 || config.adGlobalEnabled === true;
+    if (!isGlobalEnabled) return "";
+
+    switch (type) {
+        case "banner": {
+            const enabled = config.adEnabledBanner === undefined || config.adEnabledBanner === 1 || config.adEnabledBanner === true;
+            return enabled ? (config.bannerUnitId || "") : "";
+        }
+        case "grid": {
+            const enabled = config.adEnabledGrid === undefined || config.adEnabledGrid === 1 || config.adEnabledGrid === true;
+            return enabled ? (config.gridUnitId || "") : "";
+        }
+        case "custom": {
+            const enabled = config.adEnabledCustom === undefined || config.adEnabledCustom === 1 || config.adEnabledCustom === true;
+            return enabled ? (config.customUnitId || config.bannerUnitId || "") : "";
+        }
+        case "reward": {
+            const enabled = config.adEnabledReward === undefined || config.adEnabledReward === 1 || config.adEnabledReward === true;
+            return enabled ? (config.rewardUnitId || "") : "";
+        }
+        case "popup": {
+            const enabled = config.adEnabledPopup === undefined || config.adEnabledPopup === 1 || config.adEnabledPopup === true;
+            return enabled ? (config.popupUnitId || "") : "";
+        }
+        case "video": {
+            const enabled = config.adEnabledVideo === undefined || config.adEnabledVideo === 1 || config.adEnabledVideo === true;
+            return enabled ? (config.videoUnitId || "") : "";
+        }
+        default:
+            return "";
+    }
+}
+
+/**
+ * 组合式广告
+ */
+export function useAd() {
+    const bannerUnitId: ComputedRef<string> = computed(() => getAdUnitId("banner"));
+    const gridUnitId: ComputedRef<string> = computed(() => getAdUnitId("grid"));
+    const customUnitId: ComputedRef<string> = computed(() => getAdUnitId("custom"));
+    const rewardUnitId: ComputedRef<string> = computed(() => getAdUnitId("reward"));
+    const popupUnitId: ComputedRef<string> = computed(() => getAdUnitId("popup"));
+
+    return {
+        bannerUnitId,
+        gridUnitId,
+        customUnitId,
+        rewardUnitId,
+        popupUnitId,
+        getUnitId: getAdUnitId,
+    };
+}
 
 /**
  * 广告播放/加载结果数据结构。
