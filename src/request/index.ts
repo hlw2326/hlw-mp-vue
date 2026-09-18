@@ -1,4 +1,4 @@
-import { http, user, crypto, type AxiosInstance, type AxiosRequestConfig } from '@hlw-mp/core'
+import { http, user, type AxiosInstance, type AxiosRequestConfig } from '@hlw-mp/core'
 import { getDevice } from './device'
 import type { ApiRes, HttpOptions } from './types'
 
@@ -76,19 +76,19 @@ export function getClient(): AxiosInstance {
 			const token = currentOptions.getToken ? currentOptions.getToken() : user.token()
 			const time = Date.now()
 			const nonce = Math.random().toString(36).substring(2, 12)
-			const body = config.method?.toUpperCase() === 'GET' ? config.params : config.data
-			const sign = await crypto.makeSign(body, time, nonce)
-			const cipher = await crypto.encryptDevice({
-				...devInfo,
-				token
-			})
+			const cipher = encodeURIComponent(
+				JSON.stringify({
+					...devInfo,
+					token
+				})
+			)
 
 			if (!config.headers) {
 				config.headers = {}
 			}
 			config.headers['X-Client-Timestamp'] = String(time)
 			config.headers['X-Client-Nonce'] = nonce
-			config.headers['X-Client-Sign'] = sign
+			config.headers['X-Client-Sign'] = ''
 			config.headers['X-Client-Context'] = cipher
 			if ((devInfo as any)?.appid) {
 				config.headers['x-appid'] = (devInfo as any).appid
@@ -108,11 +108,6 @@ export function getClient(): AxiosInstance {
 	inst.interceptors.response.use(
 		async (response: any) => {
 			const res = response.data
-			// 解密业务数
-			if (res && typeof res.data === 'string' && res.data.includes('.')) {
-				res.data = await crypto.decryptData(res.data)
-			}
-
 			if (res && (res.code === 401 || res.code === 403)) {
 				const message = res.msg || '登录已失效，请重新登录'
 				handleUnauthorized(message, currentOptions.onUnauthorized)
