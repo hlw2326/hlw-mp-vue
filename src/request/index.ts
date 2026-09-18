@@ -1,4 +1,4 @@
-import { user } from '@hlw-mp/core'
+import { user } from './user'
 import { getDevice } from './device'
 import type { ApiRes, HttpOptions, RequestConfig, AxiosResponse, InterceptorHandler } from './types'
 
@@ -333,6 +333,7 @@ export const client = new Proxy({} as AxiosInstance, {
 })
 
 export * from './device'
+export * from './user'
 export * from './oss'
 export * from './types'
 export * from './upload'

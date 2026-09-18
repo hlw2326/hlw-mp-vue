@@ -45,7 +45,6 @@
   },
   "dependencies": {
     "md5": "^2.3.0",
-    "z-paging": "^2.8.8",
-    "@hlw-mp/core": "link:../core"
+    "z-paging": "^2.8.8"
   }
 }

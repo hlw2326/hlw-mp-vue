@@ -1,4 +1,4 @@
-import { user } from '@hlw-mp/core';
+import { user } from './user';
 import { getDevice } from './device';
 import { post, getHttpOptions } from './index';
 import type { ApiRes } from './types';
