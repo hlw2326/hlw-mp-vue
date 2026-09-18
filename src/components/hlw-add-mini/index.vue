@@ -13,7 +13,6 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { getDevice } from "../../request";
 
 defineOptions({ name: "HlwAddMini" });
 
@@ -36,8 +35,6 @@ const emit = defineEmits<{
     (event: "close"): void;
 }>();
 
-const info = getDevice();
-
 // 气泡顶部距
 const top = computed(() => {
     const menu = uni.getMenuButtonBoundingClientRect();
@@ -47,8 +44,9 @@ const top = computed(() => {
 // 箭头定位式
 const arrowStyle = computed(() => {
     const menu = uni.getMenuButtonBoundingClientRect();
+    const { windowWidth } = uni.getWindowInfo();
     const dotsCenterX = menu.left + menu.width * 0.28;
-    const arrowRightPx = info.windowWidth - dotsCenterX;
+    const arrowRightPx = windowWidth - dotsCenterX;
     const bubbleRightPx = uni.upx2px(22);
     const arrowHalfWidthPx = uni.upx2px(12);
     const rightOffset = arrowRightPx - bubbleRightPx - arrowHalfWidthPx;
