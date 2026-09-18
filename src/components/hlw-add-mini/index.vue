@@ -92,7 +92,7 @@ const top = computed(() => {
         } catch (e) {
             // 跨端环境不支持或报错时，执行安全降级计算
         }
-        return `${info.status_bar_height + 50}px`;
+        return `${info.statusBarHeight + 50}px`;
     }
     return "6px";
 });
@@ -104,7 +104,7 @@ const arrowStyle = computed(() => {
             // 胶囊左边缘 + 胶囊宽度的 28% (即三点按钮的中心点)
             const dotsCenterX = menuButtonInfo.left + menuButtonInfo.width * 0.28;
             // 屏幕宽度 - 胶囊三点中心点 = 三点中心点到屏幕右边缘的像素距离
-            const arrowRightPx = info.window_width - dotsCenterX;
+            const arrowRightPx = info.windowWidth - dotsCenterX;
             // 气泡右边缘到屏幕右边缘的像素距离 (22rpx)
             const bubbleRightPx = uni.upx2px(22);
             // 箭头相对于气泡右侧边缘的像素偏移 (再减去箭头自身半宽 12rpx 对应的 px 像素)

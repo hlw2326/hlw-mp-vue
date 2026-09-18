@@ -70,7 +70,7 @@
 import { useTheme } from "../../core";
 import { ref, computed } from "vue";
 
-const { fontSizeClass, fontFamilyClass } = useTheme();
+const { fontSize, fontSizeClass, fontFamilyClass } = useTheme();
 
 const props = defineProps({
     isNav: {
@@ -130,9 +130,46 @@ const navbarHeight = computed(() => {
     return statusBarHeight + headerHeight;
 });
 
+const FONT_SIZE_VARIABLES: Record<string, Record<string, string>> = {
+    small: {
+        "--font-xs": "20rpx",
+        "--font-sm": "24rpx",
+        "--font-base": "26rpx",
+        "--font-md": "30rpx",
+        "--font-lg": "34rpx",
+        "--font-xl": "38rpx",
+    },
+    standard: {
+        "--font-xs": "22rpx",
+        "--font-sm": "26rpx",
+        "--font-base": "30rpx",
+        "--font-md": "34rpx",
+        "--font-lg": "38rpx",
+        "--font-xl": "42rpx",
+    },
+    large: {
+        "--font-xs": "24rpx",
+        "--font-sm": "30rpx",
+        "--font-base": "34rpx",
+        "--font-md": "38rpx",
+        "--font-lg": "42rpx",
+        "--font-xl": "46rpx",
+    },
+    "extra-large": {
+        "--font-xs": "26rpx",
+        "--font-sm": "34rpx",
+        "--font-base": "38rpx",
+        "--font-md": "42rpx",
+        "--font-lg": "46rpx",
+        "--font-xl": "50rpx",
+    },
+};
+
 const pageStyle = computed(() => {
+    const currentVars = FONT_SIZE_VARIABLES[fontSize.value] || FONT_SIZE_VARIABLES.standard;
     return {
         "--navbar-height": `${navbarHeight.value}px`,
+        ...currentVars,
     };
 });
 

@@ -22,7 +22,7 @@ import { computed } from "vue";
  * @props
  *   title      - 客服卡片主标题
  *   desc       - 客服卡片描述/说明文字
- *   btn_title  - 客服按钮文案，默认 "联系客服"
+ *   btnTitle  - 客服按钮文案，默认 "联系客服"
  *   contact    - 微信原生客服卡片配置项
  *
  * @example
@@ -30,7 +30,7 @@ import { computed } from "vue";
  * <HlwCustomService
  *     title="专属客服"
  *     desc="遇到问题？点击咨询您的专属客服"
- *     btn_title="去咨询"
+ *     btnTitle="去咨询"
  *     :contact="{ send_message_title: '咨询标题' }"
  * />
  * ```
@@ -39,36 +39,36 @@ import { computed } from "vue";
 defineOptions({ name: "HlwCustomService" });
 
 interface ContactConfig {
-    send_message_title?: string;
-    send_message_path?: string;
-    send_message_img?: string;
-    show_message_card?: boolean;
+    sendMessageTitle?: string;
+    sendMessagePath?: string;
+    sendMessageImg?: string;
+    showMessageCard?: boolean;
 }
 
 const props = withDefaults(
     defineProps<{
         title: string;
         desc: string;
-        btn_title?: string;
+        btnTitle?: string;
         contact?: ContactConfig;
     }>(),
     {
-        btn_title: "",
+        btnTitle: "",
         contact: () => ({}),
     },
 );
 
 const resolvedBtnTitle = computed(() => {
-    return props.btn_title || "联系客服";
+    return props.btnTitle || "联系客服";
 });
 
 const resolvedContact = computed(() => {
     const c = props.contact || {};
     return {
-        title: c.send_message_title ?? "",
-        path: c.send_message_path ?? "",
-        img: c.send_message_img ?? "",
-        show: c.show_message_card ?? false,
+        title: c.sendMessageTitle ?? "",
+        path: c.sendMessagePath ?? "",
+        img: c.sendMessageImg ?? "",
+        show: c.showMessageCard ?? false,
     };
 });
 </script>

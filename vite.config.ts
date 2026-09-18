@@ -9,7 +9,7 @@ export default defineConfig({
     dts({
       include: ['src/**/*.ts', 'src/**/*.d.ts', 'src/**/*.vue'],
       tsconfigPath: './tsconfig.json',
-      staticImport: true,
+      entryRoot: 'src',
     }),
   ],
   resolve: {

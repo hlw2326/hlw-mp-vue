@@ -1,14 +1,14 @@
 <template>
     <view class="navbar" :class="[props.border ? '' : 'no-border']">
-        <view :style="bar_style"></view>
-        <view class="header" :style="{ height: header_height + 'px' }" :class="['align-' + props.titleAlign, props.isBack ? 'has-back' : '']">
+        <view :style="barStyle"></view>
+        <view class="header" :style="{ height: headerHeight + 'px' }" :class="['align-' + props.titleAlign, props.isBack ? 'has-back' : '']">
             <view @tap="tapBack" class="left" v-if="props.isBack">
                 <span class="i-fa6-solid-chevron-left icon-left"></span>
             </view>
             <text class="title" :style="titleCustomStyle">{{ title }}</text>
         </view>
     </view>
-    <view :style="{ height: navbar_height + 'px' }"></view>
+    <view :style="{ height: navbarHeight + 'px' }"></view>
 </template>
 
 <script lang="ts" setup>
@@ -91,18 +91,18 @@ const titleCustomStyle = computed(() => {
     return style;
 });
 
-const bar_style = computed(() => {
+const barStyle = computed(() => {
     const style = {
         height: statusBarHeight + "px",
     };
     return style;
 });
 
-const header_height = ref<number>(44);
+const headerHeight = ref<number>(44);
 if (menuButtonInfo && typeof menuButtonInfo.bottom === "number" && menuButtonInfo.bottom > 0) {
-    header_height.value = menuButtonInfo.bottom - statusBarHeight + 6;
+    headerHeight.value = menuButtonInfo.bottom - statusBarHeight + 6;
 }
-const navbar_height = ref(header_height.value + statusBarHeight);
+const navbarHeight = ref(headerHeight.value + statusBarHeight);
 
 function tapBack() {
     uni.navigateBack({

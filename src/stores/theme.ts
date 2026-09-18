@@ -78,11 +78,19 @@ export const fontFamilyPresets: FontFamilyPreset[] = [
 
 export const useThemeStore = defineStore("theme", {
     state: () => ({
+        mode: "light",
+        color: "#08c060",
         fontSize: "standard",
         fontFamily: "system",
     }),
     getters: {},
     actions: {
+        setMode(mode: string) {
+            this.mode = mode;
+        },
+        setColor(color: string) {
+            this.color = color;
+        },
         setFontSize(size: string) {
             if (["small", "standard", "large", "extra-large"].includes(size)) {
                 this.fontSize = size;
@@ -92,6 +100,12 @@ export const useThemeStore = defineStore("theme", {
             if (["system", "sans", "serif", "kaiti"].includes(font)) {
                 this.fontFamily = font;
             }
+        },
+        reset() {
+            this.mode = "light";
+            this.color = "#08c060";
+            this.fontSize = "standard";
+            this.fontFamily = "system";
         },
     },
     unistorage: true,

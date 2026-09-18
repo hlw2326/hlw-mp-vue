@@ -1,10 +1,10 @@
 <!--
     HlwAd — 小程序展示型广告原子组件
     ------------------------------------------------------------------
-    用法（业务方从自己的接口配置取对应 unit_id 传入）：
-        hlw-ad type="banner" :unit-id="config.banner_unit_id"
-        hlw-ad type="grid"   :unit-id="config.grid_unit_id" placement="right-middle"
-        hlw-ad type="custom" :unit-id="config.custom_unit_id"
+    用法（业务方从自己的接口配置取对应 unitId 传入）：
+        hlw-ad type="banner" :unit-id="config.bannerUnitId"
+        hlw-ad type="grid"   :unit-id="config.gridUnitId" placement="right-middle"
+        hlw-ad type="custom" :unit-id="config.customUnitId"
 
     渲染分支：
       - banner        → ad type="banner" unit-id="..."（微信流量主自带样式）
@@ -70,7 +70,7 @@ const emit = defineEmits<{
     (e: "error", event: any): void;
 }>();
 
-/** 有 unit_id 才渲染 */
+/** 有 unitId 才渲染 */
 const visible = computed(() => !!props.unitId);
 const style = computed(() => {
     const styles: string[] = [];

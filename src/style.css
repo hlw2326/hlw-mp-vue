@@ -1,0 +1,116 @@
+/**
+ * @hlw-mp/vue 全局基础排版、设计规范与设计令牌 (Design Tokens)
+ */
+
+/* 1. 基础盒模型与通用元素重置 */
+view,
+text,
+button,
+scroll-view,
+image {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+    line-height: 1.5;
+    letter-spacing: 1rpx;
+}
+
+button {
+    font-size: inherit;
+    color: inherit;
+}
+
+button::after {
+    border: none;
+    display: none;
+}
+
+/* 2. 页面容器基底 */
+page {
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: var(--font-base);
+    color: var(--text-primary);
+    background: var(--bg-page, #f3f3f3);
+    height: 100%;
+}
+
+/* 3. 全局设计令牌系统 */
+:root,
+page {
+    /* 主题色体系 — 默认值，运行时通过 page-meta 或 themeStore 动态驱动 */
+    --primary-color: #08c060;
+    --primary-light-bg: rgba(8, 192, 96, 0.06);
+    --primary-light-border: rgba(8, 192, 96, 0.15);
+
+    /* 顶部导航栏体系 */
+    --navbar-font-size: 26rpx;
+    --navbar-border-bottom: 1rpx solid #e7e7e7;
+    --navbar-bg-color: #ffffff;
+
+    /* 圆角体系 */
+    --radius-sm: 8rpx;      /* 小元素/微标 */
+    --radius-md: 16rpx;     /* 按钮/标签 */
+    --radius-lg: 24rpx;     /* 卡片内层/子卡片/标准卡片 */
+    --radius-xl: 32rpx;     /* 弹窗/底部抽屉等超大容器外层 */
+    --radius-full: 9999rpx; /* 胶囊/进度条/Pill标签 */
+
+    /* 页面 / 卡片标准尺寸规范 */
+    --page-padding: 30rpx;
+    --card-padding: 20rpx;
+    --card-radius: 20rpx;
+
+    /* 背景与容器表面色彩 */
+    --bg-page: #f3f3f3;                 /* 全局页面背景色 */
+    --bg-elevated: #ffffff;             /* 高亮/浮动容器背景色 */
+    --surface-card: #ffffff;            /* 标准卡片背景色 */
+    --surface-card-muted: #f8fafc;      /* 次要卡片背景色 */
+
+    /* 文本字体色彩 */
+    --text-primary: #303048;            /* 主要文本颜色 (高对比度深蓝灰) */
+    --text-secondary: #334155;          /* 次要文本颜色 (中灰，用于菜单/正文) */
+    --text-muted: #64748b;              /* 辅助/说明文本颜色 (浅中灰) */
+    --text-subtle: #94a3b8;             /* 提示文本颜色 (浅灰) */
+    --text-disabled: #cbd5e1;           /* 禁用状态文本颜色 (极浅灰) */
+
+    /* 边框与分割线色彩 */
+    --border-color: #e2e8f0;            /* 标准边框色 */
+    --border-color-light: #ececec;      /* 浅色分割线边框色 */
+
+    /* 状态反馈与功能色彩 */
+    --success-color: #5ac725;
+    --success-light-bg: #f0fdf4;
+    --warning-color: #f9ae3d;
+    --warning-light-bg: #fffbeb;
+    --danger-color: #f56c6c;
+    --danger-light-bg: #fef2f2;
+    --info-color: #909399;
+    --info-light-bg: #f9fafb;
+
+    /* 基础尺寸定义 (rpx) */
+    --font-14: 14rpx;
+    --font-16: 16rpx;
+    --font-18: 18rpx;
+    --font-20: 20rpx;
+    --font-22: 22rpx;
+    --font-24: 24rpx;
+    --font-26: 26rpx;
+    --font-28: 28rpx;
+    --font-30: 30rpx;
+    --font-32: 32rpx;
+    --font-34: 34rpx;
+    --font-36: 36rpx;
+    --font-38: 38rpx;
+    --font-40: 40rpx;
+    --font-44: 44rpx;
+    --font-80: 80rpx;
+
+    /* 标准字号档位别名 (base 默认 26rpx，步长 2rpx) */
+    --font-xxs: var(--font-20);
+    --font-xs:  var(--font-22);
+    --font-sm:  var(--font-24);
+    --font-base: var(--font-26);
+    --font-md:  var(--font-28);
+    --font-lg:  var(--font-30);
+    --font-xl:  var(--font-32);
+}
