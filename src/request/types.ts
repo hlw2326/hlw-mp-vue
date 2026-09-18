@@ -1,4 +1,34 @@
-import type { AxiosRequestConfig } from '@hlw-mp/core'
+/**
+ * 请求配置项
+ */
+export interface RequestConfig {
+	url: string
+	method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | string
+	data?: unknown
+	params?: unknown
+	baseURL?: string
+	headers?: Record<string, string>
+	timeout?: number
+}
+
+/**
+ * 响应数据包
+ */
+export interface AxiosResponse<T = any> {
+	data: T
+	status: number
+	statusText: string
+	headers: Record<string, string>
+	config: RequestConfig
+}
+
+/**
+ * 拦截处理器
+ */
+export interface InterceptorHandler<T> {
+	fulfilled?: (value: T) => T | Promise<T>
+	rejected?: (error: any) => any
+}
 
 /**
  * 接口响应表
@@ -16,10 +46,6 @@ export interface ApiRes<T = any> {
 	 * 数据业务体
 	 */
 	data: T
-	/**
-	 * 附加信息串
-	 */
-	info?: string
 }
 
 /**
@@ -48,4 +74,4 @@ export interface HttpOptions {
 	onUnauthorized?: (message: string) => void
 }
 
-export type ApiResponse<T = any> = ApiRes<T>;
+export type AxiosRequestConfig = RequestConfig
