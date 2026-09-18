@@ -187,8 +187,13 @@ export function del<T = any>(url: string, params?: unknown): Promise<ApiRes<T>> 
 }
 
 /**
- * 代理请求例
+ * 获取网络配置
+ * @returns 全局配置项
  */
+export function getHttpOptions(): HttpOptions {
+	return currentOptions
+}
+
 export const client = new Proxy({} as AxiosInstance, {
 	get(target, prop) {
 		const inst = getClient()
@@ -197,5 +202,7 @@ export const client = new Proxy({} as AxiosInstance, {
 	}
 })
 
+export * from './upload'
 export { uploadOss, getDevice }
 export type { OssConfig, ApiRes, HttpOptions }
+
