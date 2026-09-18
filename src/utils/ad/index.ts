@@ -53,10 +53,8 @@ export function getAdConfig(): AdConfig {
         return currentAdConfigProvider() || {};
     }
     try {
-        if (typeof uni !== "undefined" && uni.getStorageSync) {
-            const saved = uni.getStorageSync("config");
-            if (saved?.ad) return saved.ad;
-        }
+        const saved = uni.getStorageSync("config");
+        if (saved?.ad) return saved.ad;
     } catch {}
     return {};
 }
@@ -160,7 +158,7 @@ function resolveReward(res: AdRes) {
 export function setPopupAd(adId?: string, done?: (ok: boolean) => void): boolean {
     const targetId = adId || getAdUnitId("popup");
     popupCallback = done;
-    if (!targetId || !uni.createInterstitialAd) return false;
+    if (!targetId) return false;
 
     activePopupId = targetId;
     if (!adInstances.has(targetId)) {
@@ -228,7 +226,7 @@ export function setRewardAd(adId?: string, done?: (res: AdRes) => void): Promise
         rewardResolve = resolve;
     });
 
-    if (!targetId || !uni.createRewardedVideoAd) {
+    if (!targetId) {
         resolveReward({ success: false, isEnded: false });
         return rewardPromise;
     }
@@ -352,14 +350,10 @@ export async function playRewardAd(options: { unitId?: string; retryConfirm?: bo
         return { success: false, isEnded: false };
     }
 
-    if (typeof uni !== "undefined" && uni.showLoading) {
-        uni.showLoading({ title: "正在拉起广告", mask: true });
-    }
+    uni.showLoading({ title: "正在拉起广告", mask: true });
 
     const hideLoading = () => {
-        if (typeof uni !== "undefined" && uni.hideLoading) {
-            uni.hideLoading();
-        }
+        uni.hideLoading();
     };
 
     const timer = setTimeout(hideLoading, 8000);

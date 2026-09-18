@@ -63,18 +63,10 @@ function buildPayload(base: ShareConfigResolver, extra?: ShareConfigResolver): S
 }
 
 /**
- * 显示微信原生分享菜单。
+ * 显示分享单
  */
 function showShareMenu(): void {
-    const api = typeof uni !== "undefined" ? (uni as unknown as {
-        showShareMenu?: (options: {
-            withShareTicket?: boolean;
-            menus?: string[];
-            fail?: () => void;
-        }) => void;
-    }) : undefined;
-
-    api?.showShareMenu?.({
+    uni.showShareMenu({
         withShareTicket: true,
         menus: ["shareAppMessage", "shareTimeline"],
         fail: () => undefined,

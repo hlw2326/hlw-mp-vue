@@ -11,9 +11,7 @@ let lastToastTime = 0
  * @param message 错误提示文
  */
 function toast(message: string): void {
-	if (typeof uni !== 'undefined' && uni.showToast) {
-		uni.showToast({ title: message, icon: 'none' })
-	}
+	uni.showToast({ title: message, icon: 'none' })
 }
 
 /**
@@ -59,8 +57,7 @@ export function getClient(): AxiosInstance {
 
 	const base =
 		currentOptions.baseURL ||
-		(typeof globalThis !== 'undefined' && (globalThis as any).__APP_BASE_URL__) ||
-		(typeof window !== 'undefined' && (window as any).__APP_BASE_URL__) ||
+		(globalThis as any).__APP_BASE_URL__ ||
 		''
 
 	const inst: AxiosInstance = (http as any).create({

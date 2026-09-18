@@ -62,10 +62,6 @@ export async function uploadOss(
 	const target = String(oss.host || oss.server || '');
 
 	return new Promise((resolve, reject) => {
-		if (typeof uni === 'undefined' || !uni.uploadFile) {
-			reject(new Error('当前环境不支持 uni.uploadFile'));
-			return;
-		}
 		uni.uploadFile({
 			url: target,
 			filePath,

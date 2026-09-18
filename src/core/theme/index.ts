@@ -54,20 +54,18 @@ const THEME_KEY = "theme";
  */
 export function getTheme(): ThemeState {
     try {
-        if (typeof uni !== "undefined" && typeof uni.getStorageSync === "function") {
-            const saved = uni.getStorageSync(THEME_KEY);
-            if (saved && typeof saved === "object") {
-                const size = (saved.fontSize || saved.size || DEFAULT_THEME.size) as FontSize;
-                const font = (saved.fontFamily || saved.font || DEFAULT_THEME.font) as FontFamily;
-                return {
-                    mode: (saved.mode || DEFAULT_THEME.mode) as ThemeMode,
-                    color: saved.color || DEFAULT_THEME.color,
-                    size,
-                    fontSize: size,
-                    font,
-                    fontFamily: font,
-                };
-            }
+        const saved = uni.getStorageSync(THEME_KEY);
+        if (saved && typeof saved === "object") {
+            const size = (saved.fontSize || saved.size || DEFAULT_THEME.size) as FontSize;
+            const font = (saved.fontFamily || saved.font || DEFAULT_THEME.font) as FontFamily;
+            return {
+                mode: (saved.mode || DEFAULT_THEME.mode) as ThemeMode,
+                color: saved.color || DEFAULT_THEME.color,
+                size,
+                fontSize: size,
+                font,
+                fontFamily: font,
+            };
         }
     } catch (error) {
         console.error("[Theme] 读取异常:", error);
@@ -87,9 +85,7 @@ export function saveTheme(themeState: Partial<ThemeState>): void {
         if (next.fontSize && !next.size) next.size = next.fontSize;
         if (next.font && !next.fontFamily) next.fontFamily = next.font;
         if (next.fontFamily && !next.font) next.font = next.fontFamily;
-        if (typeof uni !== "undefined" && typeof uni.setStorageSync === "function") {
-            uni.setStorageSync(THEME_KEY, next);
-        }
+        uni.setStorageSync(THEME_KEY, next);
     } catch (error) {
         console.error("[Theme] 写入异常:", error);
     }
