@@ -335,5 +335,5 @@ export const client = new Proxy({} as AxiosInstance, {
 export * from './device'
 export * from './user'
 export * from './oss'
-export * from './types'
+export type { RequestConfig, AxiosResponse, InterceptorHandler, ApiRes, HttpOptions, AxiosRequestConfig } from './types'
 export * from './upload'

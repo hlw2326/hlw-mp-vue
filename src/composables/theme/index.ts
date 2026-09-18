@@ -17,7 +17,7 @@ import type {
 declare const uni: any;
 
 export * from "../../stores/theme";
-export * from "./types";
+export type { ThemeMode, FontSize, FontFamily, ThemeColor, ThemeState, InitThemeOptions } from "./types";
 
 /**
  * 默认主题配
