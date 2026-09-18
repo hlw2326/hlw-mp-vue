@@ -26,26 +26,53 @@ export function useUser() {
     const store = useUserStore();
     const token = toRef(store, "token");
     const userProfile = toRef(store, "user");
-    const isLogin = computed(() => store.isLogin);
+    const isLogin = computed(() => Boolean(store.token));
 
+    /**
+     * 设置登录凭据
+     */
     function setToken(tokenValue: string): void {
-        store.setToken(tokenValue);
+        store.token = tokenValue;
+        uni.setStorageSync("token", tokenValue);
     }
 
+    /**
+     * 设置用户资料
+     */
     function setUser(profile: UserProfile | null): void {
-        store.setUser(profile);
+        store.user = profile;
+        if (profile) {
+            uni.setStorageSync("userInfo", profile);
+        } else {
+            uni.removeStorageSync("userInfo");
+        }
     }
 
+    /**
+     * 更新部分资料
+     */
     function updateUser(patch: Partial<UserProfile>): void {
-        store.updateUser(patch);
+        if (store.user) {
+            store.user = { ...store.user, ...patch };
+            uni.setStorageSync("userInfo", store.user);
+        }
     }
 
+    /**
+     * 清理登录状态
+     */
     function logout(): void {
-        store.logout();
+        store.token = "";
+        store.user = null;
+        uni.removeStorageSync("token");
+        uni.removeStorageSync("userInfo");
     }
 
+    /**
+     * 重置状态数据
+     */
     function reset(): void {
-        store.reset();
+        logout();
     }
 
     return {
