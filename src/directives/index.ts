@@ -1,1 +1,1 @@
-export { vCopy } from './copy'
+export * from './copy';

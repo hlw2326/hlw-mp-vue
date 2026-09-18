@@ -1,6 +1,5 @@
 import { http, user, crypto, type AxiosInstance, type AxiosRequestConfig } from '@hlw-mp/core'
 import { getDevice } from './device'
-import { uploadOss, type OssConfig } from './oss'
 import type { ApiRes, HttpOptions } from './types'
 
 let target: AxiosInstance | null = null
@@ -202,7 +201,8 @@ export const client = new Proxy({} as AxiosInstance, {
 	}
 })
 
+export * from './device'
+export * from './oss'
+export * from './types'
 export * from './upload'
-export { uploadOss, getDevice }
-export type { OssConfig, ApiRes, HttpOptions }
 

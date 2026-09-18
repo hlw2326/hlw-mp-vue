@@ -4,8 +4,6 @@ import {
     useThemeStore,
     fontSizePresets,
     fontFamilyPresets,
-    type FontSizePreset,
-    type FontFamilyPreset,
 } from "../../stores/theme";
 import type {
     ThemeMode,
@@ -18,13 +16,7 @@ import type {
 
 declare const uni: any;
 
-export {
-    useThemeStore,
-    fontSizePresets,
-    type FontSizePreset,
-    fontFamilyPresets,
-    type FontFamilyPreset,
-};
+export * from "../../stores/theme";
 export * from "./types";
 
 /**
