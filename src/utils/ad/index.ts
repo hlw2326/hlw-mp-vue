@@ -156,30 +156,25 @@ function resolveReward(res: AdRes) {
     rewardPromise = null;
 }
 
-/**
- * 配置/预加载插屏广告
- * 
- * @param adId 广告单元 ID
- * @param done 广告关闭后的回调（可选）
- * @returns 是否配置成功
- */
-export function setPopupAd(adId: string, done?: (ok: boolean) => void): boolean {
+// 配置插屏广告
+export function setPopupAd(adId?: string, done?: (ok: boolean) => void): boolean {
+    const targetId = adId || getAdUnitId("popup");
     popupCallback = done;
-    if (!adId || !uni.createInterstitialAd) return false;
+    if (!targetId || !uni.createInterstitialAd) return false;
 
-    activePopupId = adId;
-    if (!adInstances.has(adId)) {
+    activePopupId = targetId;
+    if (!adInstances.has(targetId)) {
         try {
-            const ad = uni.createInterstitialAd({ adUnitId: adId });
-            ad.onLoad?.(() => console.log(`[Ad] Interstitial loaded: ${adId}`));
-            ad.onError?.((err: any) => {
-                console.error("[Ad] Interstitial load error:", err);
-                if (activePopupId === adId) popupCallback?.(false);
+            const ad = uni.createInterstitialAd({ adUnitId: targetId });
+            ad.onLoad?.(() => console.log(`[Ad] Interstitial loaded: ${targetId}`));
+            ad.onError?.((error: any) => {
+                console.error("[Ad] Interstitial load error:", error);
+                if (activePopupId === targetId) popupCallback?.(false);
             });
             ad.onClose?.(() => {
-                if (activePopupId === adId) popupCallback?.(true);
+                if (activePopupId === targetId) popupCallback?.(true);
             });
-            adInstances.set(adId, ad);
+            adInstances.set(targetId, ad);
         } catch (error) {
             console.error("[Ad] Interstitial creation failed:", error);
             return false;
@@ -188,15 +183,17 @@ export function setPopupAd(adId: string, done?: (ok: boolean) => void): boolean 
     return true;
 }
 
-/**
- * 延迟展示已配置的插屏广告
- * 
- * @param delay 延迟毫秒数，默认 3000ms
- * @returns 返回 Promise，指示是否成功显示且被关闭
- */
-export function showPopupAd(delay = 3000): Promise<boolean> {
+// 展示插屏广告
+export function showPopupAd(delay = 0, unitId?: string): Promise<boolean> {
+    const targetId = unitId || activePopupId || getAdUnitId("popup");
+    if (!targetId) return Promise.resolve(false);
+
+    if (!setPopupAd(targetId)) {
+        return Promise.resolve(false);
+    }
+
     return new Promise((resolve) => {
-        const ad = adInstances.get(activePopupId);
+        const ad = adInstances.get(targetId);
         if (!ad) {
             resolve(false);
             return;
@@ -208,58 +205,55 @@ export function showPopupAd(delay = 3000): Promise<boolean> {
             resolve(ok);
         };
 
-        setTimeout(
-            () => {
-                ad.show().catch((err: any) => {
-                    console.error("[Ad] Interstitial show error:", err);
-                    popupCallback?.(false);
-                });
-            },
-            Math.max(0, delay),
-        );
+        const executeShow = () => {
+            ad.show().catch((error: any) => {
+                console.error("[Ad] Interstitial show error:", error);
+                popupCallback?.(false);
+            });
+        };
+
+        if (delay > 0) {
+            setTimeout(executeShow, delay);
+        } else {
+            executeShow();
+        }
     });
 }
 
-/**
- * 配置/预加载激励视频广告
- * 
- * @param adId 广告单元 ID
- * @param done 播放结束的回调（可选）
- * @returns 返回 Promise<AdRes>
- */
-export function setRewardAd(adId: string, done?: (res: AdRes) => void): Promise<AdRes> {
+// 配置激励广告
+export function setRewardAd(adId?: string, done?: (res: AdRes) => void): Promise<AdRes> {
+    const targetId = adId || getAdUnitId("reward");
     rewardCallback = done;
     rewardPromise = new Promise((resolve) => {
         rewardResolve = resolve;
     });
 
-    if (!adId || !uni.createRewardedVideoAd) {
+    if (!targetId || !uni.createRewardedVideoAd) {
         resolveReward({ success: false, isEnded: false });
         return rewardPromise;
     }
 
-    activeRewardId = adId;
-    if (!adInstances.has(adId)) {
+    activeRewardId = targetId;
+    if (!adInstances.has(targetId)) {
         try {
-            const ad = uni.createRewardedVideoAd({ adUnitId: adId });
-            ad.onLoad?.(() => console.log(`[Ad] Rewarded video loaded: ${adId}`));
+            const ad = uni.createRewardedVideoAd({ adUnitId: targetId });
+            ad.onLoad?.(() => console.log(`[Ad] Rewarded video loaded: ${targetId}`));
             ad.onError?.((errorResult: any) => {
                 console.error("[Ad] Rewarded video load error:", errorResult);
-                if (activeRewardId === adId) {
+                if (activeRewardId === targetId) {
                     resolveReward({ success: false, isEnded: false, error: errorResult });
                 }
             });
             ad.onClose?.((res: { isEnded?: boolean }) => {
-                if (activeRewardId === adId) {
+                if (activeRewardId === targetId) {
                     const ended = !!res?.isEnded;
                     resolveReward({ success: ended, isEnded: ended });
-                    // 播放结束后立即在后台静默预加载下一个广告，以保证后续拉起流畅且支持重试逻辑
-                    ad.load().catch((err: any) => {
-                        console.warn("[Ad] Silent preload after close failed:", err);
+                    ad.load().catch((error: any) => {
+                        console.warn("[Ad] Silent preload after close failed:", error);
                     });
                 }
             });
-            adInstances.set(adId, ad);
+            adInstances.set(targetId, ad);
         } catch (error) {
             console.error("[Ad] Rewarded video creation failed:", error);
             resolveReward({ success: false, isEnded: false, error });
@@ -268,14 +262,21 @@ export function setRewardAd(adId: string, done?: (res: AdRes) => void): Promise<
     return rewardPromise;
 }
 
-/**
- * 立即播放已加载的激励视频广告
- * 
- * @param onShowSuccess 广告成功拉起播放时的回调（常用于关闭 Loading 等待提示）
- * @returns 返回 Promise<AdRes>，指示广告是否正常播放完毕
- */
-export function showRewardAd(onShowSuccess?: () => void): Promise<AdRes> {
-    const ad = adInstances.get(activeRewardId);
+// 播放激励广告
+export function showRewardAd(options?: { unitId?: string; onShowSuccess?: () => void } | (() => void)): Promise<AdRes> {
+    const onShowSuccess = typeof options === "function" ? options : options?.onShowSuccess;
+    const unitId = typeof options === "object" ? options?.unitId : undefined;
+    const targetId = unitId || activeRewardId || getAdUnitId("reward");
+
+    if (!targetId) {
+        return Promise.resolve({ success: false, isEnded: false });
+    }
+
+    if (!activeRewardId || activeRewardId !== targetId || !adInstances.has(targetId)) {
+        setRewardAd(targetId);
+    }
+
+    const ad = adInstances.get(targetId);
     if (!ad) {
         return Promise.resolve({ success: false, isEnded: false });
     }
@@ -298,29 +299,22 @@ export function showRewardAd(onShowSuccess?: () => void): Promise<AdRes> {
                         .then(() => {
                             onShowSuccess?.();
                         })
-                        .catch((err: any) => {
-                            console.error("[Ad] Rewarded video show error:", err);
-                            resolveReward({ success: false, isEnded: false, error: err });
+                        .catch((errorResult: any) => {
+                            console.error("[Ad] Rewarded video show error:", errorResult);
+                            resolveReward({ success: false, isEnded: false, error: errorResult });
                         });
                 })
-                .catch((err: any) => {
-                    console.error("[Ad] Rewarded video load error:", err);
-                    resolveReward({ success: false, isEnded: false, error: err });
+                .catch((errorResult: any) => {
+                    console.error("[Ad] Rewarded video load error:", errorResult);
+                    resolveReward({ success: false, isEnded: false, error: errorResult });
                 });
         });
 
     return current;
 }
 
-/**
- * 销毁指定 Unit ID 的激励视频广告实例，释放内存与原生渲染层绑定并清除缓存。
- * 
- * @param adId 广告单元 ID
- */
+// 销毁广告实例
 export function destroyRewardAd(adId: string) {
-    // 仅从本地缓存 Map 中移除该广告单元的实例引用，并清理相关状态，严禁调用 ad.destroy()
-    // 因为微信小程序的 wx.createRewardedVideoAd 在整个应用生命周期中为全局单例，
-    // 一旦销毁 (destroy) 后，后续再次 create 该广告位 ID 将永远返回已销毁的实例，导致报错 "video-ad has been destroyed"
     adInstances.delete(adId);
     if (activeRewardId === adId) {
         activeRewardId = "";
@@ -330,11 +324,7 @@ export function destroyRewardAd(adId: string) {
     }
 }
 
-/**
- * 弹窗提示需要看完广告才有奖励。
- * 提供“继续观看”和“取消”按钮。
- * @returns 返回 Promise<boolean>，用户点击“继续”返回 true，点击“取消”返回 false
- */
+// 确认继续观看
 export function confirmRewardAd(): Promise<boolean> {
     return new Promise((resolve) => {
         uni.showModal({
@@ -353,4 +343,54 @@ export function confirmRewardAd(): Promise<boolean> {
         });
     });
 }
+
+// 播放激励流程
+export async function playRewardAd(options: { unitId?: string; retryConfirm?: boolean } = {}): Promise<AdRes> {
+    const { unitId, retryConfirm = true } = options;
+    const targetId = unitId || getAdUnitId("reward");
+    if (!targetId) {
+        return { success: false, isEnded: false };
+    }
+
+    if (typeof uni !== "undefined" && uni.showLoading) {
+        uni.showLoading({ title: "正在拉起广告", mask: true });
+    }
+
+    const hideLoading = () => {
+        if (typeof uni !== "undefined" && uni.hideLoading) {
+            uni.hideLoading();
+        }
+    };
+
+    const timer = setTimeout(hideLoading, 8000);
+    const onEnd = () => {
+        clearTimeout(timer);
+        hideLoading();
+    };
+
+    try {
+        setRewardAd(targetId);
+        const result = await showRewardAd({ unitId: targetId, onShowSuccess: onEnd });
+        onEnd();
+        destroyRewardAd(targetId);
+
+        if (result.success && result.isEnded) {
+            return result;
+        }
+
+        if (retryConfirm && !result.isEnded && !result.error) {
+            const retry = await confirmRewardAd();
+            if (retry) {
+                return await playRewardAd(options);
+            }
+        }
+
+        return result;
+    } catch (error) {
+        onEnd();
+        destroyRewardAd(targetId);
+        return { success: false, isEnded: false, error };
+    }
+}
+
 

@@ -1,20 +1,53 @@
-import { useMsg } from './core/msg';
+import { useMsg } from "./core/msg";
+import {
+    showPopupAd,
+    showRewardAd,
+    playRewardAd,
+    getAdUnitId,
+    setupAd,
+} from "./utils/ad";
 
 /**
- * 全局 hlw 实例接口定义，聚合了框架的核心能力。
+ * 广告门面定义
+ */
+export interface HlwAdInstance {
+    /** 展示插屏广 */
+    showPopup: typeof showPopupAd;
+    /** 播放激励广 */
+    showReward: typeof showRewardAd;
+    /** 播放激励流 */
+    playReward: typeof playRewardAd;
+    /** 获取单元号 */
+    getUnitId: typeof getAdUnitId;
+    /** 注入广告源 */
+    setup: typeof setupAd;
+}
+
+/**
+ * 全局实例定义
  */
 export interface HlwInstance {
-  /** 统一的消息提示与模态弹窗管理模块 */
-  $msg: ReturnType<typeof useMsg>;
+    /** 统一提示管 */
+    $msg: ReturnType<typeof useMsg>;
+    /** 统一广告管 */
+    $ad: HlwAdInstance;
 }
 
 let _msg: ReturnType<typeof useMsg> | null = null;
 
 /**
- * 全局单例 `hlw` 实例，各核心模块在首次读取时延迟初始化并缓存。
+ * 全局单例对象
  */
 export const hlw: HlwInstance = {
-  /** 延迟创建消息提示实例。 */
-  get $msg() { return (_msg ??= useMsg()); },
+    /** 延迟创建提 */
+    get $msg() { return (_msg ??= useMsg()); },
+    /** 全局广告门 */
+    $ad: {
+        showPopup: showPopupAd,
+        showReward: showRewardAd,
+        playReward: playRewardAd,
+        getUnitId: getAdUnitId,
+        setup: setupAd,
+    },
 };
 
