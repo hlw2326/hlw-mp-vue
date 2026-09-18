@@ -1,21 +1,26 @@
 import { defineStore } from "pinia";
 
-// ==========================================
-// 1. 主题 (Theme) 预设与类型
-// ==========================================
-
-
-
-// ==========================================
-// 2. 字体大小 (FontSize) 预设与类型
-// ==========================================
-
+/**
+ * 字体大小项
+ */
 export interface FontSizePreset {
     id: string;
     name: string;
     class: string;
 }
 
+/**
+ * 字体样式项
+ */
+export interface FontFamilyPreset {
+    id: string;
+    name: string;
+    class: string;
+}
+
+/**
+ * 字体大小表
+ */
 export const fontSizePresets: FontSizePreset[] = [
     {
         id: "small",
@@ -39,16 +44,9 @@ export const fontSizePresets: FontSizePreset[] = [
     },
 ];
 
-// ==========================================
-// 3. 字体样式 (FontFamily) 预设与类型
-// ==========================================
-
-export interface FontFamilyPreset {
-    id: string;
-    name: string;
-    class: string;
-}
-
+/**
+ * 字体样式表
+ */
 export const fontFamilyPresets: FontFamilyPreset[] = [
     {
         id: "system",
@@ -72,10 +70,9 @@ export const fontFamilyPresets: FontFamilyPreset[] = [
     },
 ];
 
-// ==========================================
-// 4. 统一个性化配置 Store (Theme / Font)
-// ==========================================
-
+/**
+ * 主题状态库
+ */
 export const useThemeStore = defineStore("theme", {
     state: () => ({
         mode: "light",
@@ -83,30 +80,5 @@ export const useThemeStore = defineStore("theme", {
         fontSize: "standard",
         fontFamily: "system",
     }),
-    getters: {},
-    actions: {
-        setMode(mode: string) {
-            this.mode = mode;
-        },
-        setColor(color: string) {
-            this.color = color;
-        },
-        setFontSize(size: string) {
-            if (["small", "standard", "large", "extra-large"].includes(size)) {
-                this.fontSize = size;
-            }
-        },
-        setFontFamily(font: string) {
-            if (["system", "sans", "serif", "kaiti"].includes(font)) {
-                this.fontFamily = font;
-            }
-        },
-        reset() {
-            this.mode = "light";
-            this.color = "#08c060";
-            this.fontSize = "standard";
-            this.fontFamily = "system";
-        },
-    },
-    unistorage: true,
+    persist: true,
 });

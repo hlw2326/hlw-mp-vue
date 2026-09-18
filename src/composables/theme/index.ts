@@ -14,8 +14,6 @@ import type {
     InitThemeOptions,
 } from "./types";
 
-declare const uni: any;
-
 export * from "../../stores/theme";
 export type { ThemeMode, FontSize, FontFamily, ThemeColor, ThemeState, InitThemeOptions } from "./types";
 
@@ -100,10 +98,14 @@ export function applyTheme(themeState: Partial<ThemeState>): void {
     const targetFont = themeState.fontFamily || themeState.font;
     try {
         const store = useThemeStore();
-        if (themeState.mode) store.setMode(themeState.mode);
-        if (themeState.color) store.setColor(themeState.color);
-        if (targetSize) store.setFontSize(targetSize);
-        if (targetFont) store.setFontFamily(targetFont);
+        if (themeState.mode) store.mode = themeState.mode;
+        if (themeState.color) store.color = themeState.color;
+        if (targetSize && ["small", "standard", "large", "extra-large"].includes(targetSize)) {
+            store.fontSize = targetSize;
+        }
+        if (targetFont && ["system", "sans", "serif", "kaiti"].includes(targetFont)) {
+            store.fontFamily = targetFont;
+        }
     } catch {
         // 容错忽略
     }
@@ -151,34 +153,66 @@ export function useTheme() {
         return found ? found.class : "font-family-system";
     });
 
+    /**
+     * 设置外观模
+     */
     function setMode(targetMode: ThemeMode): void {
-        store.setMode(targetMode);
+        store.mode = targetMode;
         saveTheme({ mode: targetMode });
     }
 
+    /**
+     * 设置主题色
+     */
     function setColor(hexColor: string): void {
-        store.setColor(hexColor);
+        store.color = hexColor;
         saveTheme({ color: hexColor });
     }
 
+    /**
+     * 设置字号大
+     */
     function setSize(targetSize: FontSize): void {
-        store.setFontSize(targetSize);
+        store.fontSize = targetSize;
         saveTheme({ size: targetSize, fontSize: targetSize });
     }
 
+    /**
+     * 设置字号字
+     */
     function setFontSize(targetSize: string): void {
-        store.setFontSize(targetSize);
-        saveTheme({ size: targetSize as FontSize, fontSize: targetSize as FontSize });
+        if (["small", "standard", "large", "extra-large"].includes(targetSize)) {
+            store.fontSize = targetSize;
+            saveTheme({ size: targetSize as FontSize, fontSize: targetSize as FontSize });
+        }
     }
 
+    /**
+     * 设置字体样
+     */
     function setFontFamily(targetFont: string): void {
-        store.setFontFamily(targetFont);
-        saveTheme({ font: targetFont as FontFamily, fontFamily: targetFont as FontFamily });
+        if (["system", "sans", "serif", "kaiti"].includes(targetFont)) {
+            store.fontFamily = targetFont;
+            saveTheme({ font: targetFont as FontFamily, fontFamily: targetFont as FontFamily });
+        }
     }
 
+    /**
+     * 重置主题配
+     */
     function resetTheme(): void {
-        store.reset();
+        store.mode = DEFAULT_THEME.mode;
+        store.color = DEFAULT_THEME.color;
+        store.fontSize = DEFAULT_THEME.size;
+        store.fontFamily = DEFAULT_THEME.fontFamily || "system";
         saveTheme(DEFAULT_THEME);
+    }
+
+    /**
+     * 重置状态数
+     */
+    function reset(): void {
+        resetTheme();
     }
 
     return {
@@ -199,6 +233,7 @@ export function useTheme() {
         setFontSize,
         setFontFamily,
         resetTheme,
+        reset,
         applyTheme,
         getTheme,
         initTheme,
