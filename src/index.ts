@@ -13,4 +13,4 @@ export * from "./directives";
 // 组件类型定义
 export type { HlwMenuItem } from "./components/hlw-menu/types";
 export type { HlwPagingRef, HlwPagingInstance } from "./components/hlw-paging/types";
-export type { HlwRewardAdResult } from "./components/hlw-reward-ad/types";
+export type { HlwAdType, HlwGridPlacement, HlwRewardAdResult } from "./components/hlw-ad/types";

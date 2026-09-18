@@ -1,22 +1,17 @@
-<!--
-    HlwAd — 小程序展示型广告原子组件
-    ------------------------------------------------------------------
-    用法（业务方从自己的接口配置取对应 unitId 传入）：
-        hlw-ad type="banner" :unit-id="config.bannerUnitId"
-        hlw-ad type="grid"   :unit-id="config.gridUnitId" placement="right-middle"
-        hlw-ad type="custom" :unit-id="config.customUnitId"
-
-    渲染分支：
-      - banner        → ad type="banner" unit-id="..."（微信流量主自带样式）
-      - grid / custom → ad-custom unit-id="..."（原生模板广告）
-
-    video / reward / popup 不走这个组件：
-      - reward / popup → 业务方自行调用小程序广告 API
-      - video（贴片）须嵌在 video 标签内，业务侧自己用 <ad type="video">
--->
 <template>
+    <!-- 激励视频模式：作为点击触发器包裹插槽内容 -->
     <view
-        v-if="visible"
+        v-if="type === 'reward' && visible"
+        :class="['hlw-ad', 'hlw-ad--reward', customClass]"
+        :style="customStyle"
+        @tap="open"
+    >
+        <slot />
+    </view>
+
+    <!-- 展示型广告模式：Banner / Grid / Custom -->
+    <view
+        v-else-if="visible"
         :class="['hlw-ad', `hlw-ad--${type}`, type === 'grid' ? `hlw-ad--${placement}` : '', customClass]"
         :style="style"
     >
@@ -37,26 +32,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { getAdUnitId } from "../../utils/ad";
+import { ref, computed } from "vue";
+import { getAdUnitId, playRewardAd } from "../../utils/ad";
+import type { HlwAdType, HlwGridPlacement, HlwRewardAdResult } from "./types";
 
 defineOptions({ name: "HlwAd" });
 
-type GridPlacement = "left-top" | "right-top" | "left-middle" | "right-middle" | "left-bottom" | "right-bottom" | "center";
-
 interface Props {
-    /** 广告类型 — 仅展示型（banner / grid / custom），默认 custom */
-    type?: "banner" | "grid" | "custom";
-    /** 微信广告单元 id；若未传则自动根据 type 从全局广告配置解析 */
+    /** 广告类型值，默认 custom */
+    type?: HlwAdType;
+    /** 广告单元号 */
     unitId?: string;
-    /** grid 广告悬浮位置，默认 center */
-    placement?: GridPlacement;
-    /** 自定义样式（合并到根元素） */
+    /** 格子定位值，默认 center */
+    placement?: HlwGridPlacement;
+    /** 自定义样式 */
     customStyle?: string;
-    /** 自定义 class */
+    /** 自定义类名 */
     customClass?: string;
-    /** 圆角大小，默认 10rpx */
+    /** 圆角大小值，默认 10rpx */
     radius?: string;
+    /** 退出重试否，默认 true */
+    retryConfirm?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -66,20 +62,24 @@ const props = withDefaults(defineProps<Props>(), {
     customStyle: "",
     customClass: "",
     radius: "10rpx",
+    retryConfirm: true,
 });
 
 const emit = defineEmits<{
     (event: "load", payload: any): void;
     (event: "error", payload: any): void;
+    (event: "close", result: HlwRewardAdResult): void;
 }>();
+
+const isClicked = ref(false);
 
 const resolvedUnitId = computed(() => {
     if (props.unitId) return props.unitId;
     return getAdUnitId(props.type);
 });
 
-/** 有 unitId 才渲染 */
 const visible = computed(() => !!resolvedUnitId.value);
+
 const style = computed(() => {
     const styles: string[] = [];
     if (props.type !== "grid" && props.radius) {
@@ -91,13 +91,35 @@ const style = computed(() => {
     return styles.join(";");
 });
 
-function onLoad(event: any) {
+function onLoad(event: any): void {
     emit("load", event);
 }
-function onError(event: any) {
+
+function onError(event: any): void {
     console.warn(`[HlwAd] type=${props.type} error`, event?.detail);
     emit("error", event);
 }
+
+async function open(): Promise<void> {
+    if (props.type !== "reward" || isClicked.value || !resolvedUnitId.value) return;
+    isClicked.value = true;
+    try {
+        const result = await playRewardAd({
+            unitId: resolvedUnitId.value,
+            retryConfirm: props.retryConfirm,
+        });
+        emit("close", {
+            success: result.success,
+            isEnded: result.isEnded,
+            loadFailed: !result.success,
+            error: result.error,
+        });
+    } finally {
+        isClicked.value = false;
+    }
+}
+
+defineExpose({ open });
 </script>
 
 <style scoped>
@@ -105,6 +127,13 @@ function onError(event: any) {
     border-radius: var(--radius-lg);
     overflow: hidden;
     background: var(--surface-card, #ffffff);
+}
+
+.hlw-ad--reward {
+    display: block;
+    border-radius: 0;
+    overflow: visible;
+    background: transparent;
 }
 
 /* 格子广告：默认居中悬浮；微信硬性规则要求 wrapper 透明无圆角，customStyle 可覆盖 */
