@@ -67,7 +67,14 @@
  * </hlw-page>
  * ```
  */
-import { useTheme } from "../../core";
+defineOptions({
+    name: "HlwPage",
+    options: {
+        styleIsolation: "shared",
+    },
+});
+
+import { useTheme } from "@hlw-mp/vue";
 import { ref, computed } from "vue";
 
 const { fontSize, fontSizeClass, fontFamilyClass } = useTheme();
@@ -133,35 +140,35 @@ const navbarHeight = computed(() => {
 const FONT_SIZE_VARIABLES: Record<string, Record<string, string>> = {
     small: {
         "--font-xs": "20rpx",
-        "--font-sm": "24rpx",
-        "--font-base": "26rpx",
-        "--font-md": "30rpx",
-        "--font-lg": "34rpx",
-        "--font-xl": "38rpx",
+        "--font-sm": "22rpx",
+        "--font-base": "24rpx",
+        "--font-md": "26rpx",
+        "--font-lg": "28rpx",
+        "--font-xl": "30rpx",
     },
     standard: {
         "--font-xs": "22rpx",
-        "--font-sm": "26rpx",
-        "--font-base": "30rpx",
-        "--font-md": "34rpx",
-        "--font-lg": "38rpx",
-        "--font-xl": "42rpx",
+        "--font-sm": "24rpx",
+        "--font-base": "26rpx",
+        "--font-md": "28rpx",
+        "--font-lg": "30rpx",
+        "--font-xl": "32rpx",
     },
     large: {
         "--font-xs": "24rpx",
-        "--font-sm": "30rpx",
-        "--font-base": "34rpx",
-        "--font-md": "38rpx",
-        "--font-lg": "42rpx",
-        "--font-xl": "46rpx",
+        "--font-sm": "26rpx",
+        "--font-base": "30rpx",
+        "--font-md": "32rpx",
+        "--font-lg": "34rpx",
+        "--font-xl": "36rpx",
     },
     "extra-large": {
         "--font-xs": "26rpx",
-        "--font-sm": "34rpx",
-        "--font-base": "38rpx",
-        "--font-md": "42rpx",
-        "--font-lg": "46rpx",
-        "--font-xl": "50rpx",
+        "--font-sm": "28rpx",
+        "--font-base": "34rpx",
+        "--font-md": "36rpx",
+        "--font-lg": "38rpx",
+        "--font-xl": "40rpx",
     },
 };
 
@@ -187,6 +194,7 @@ function onScrollToLower() {
     flex-direction: column;
     overflow: hidden;
     box-sizing: border-box;
+    font-size: var(--font-base);
 }
 
 .hlw-page-top {
@@ -213,38 +221,38 @@ function onScrollToLower() {
 /* 全局系统字体大小缩放配置 */
 .font-size-small {
     --font-xs: 20rpx;
-    --font-sm: 24rpx;
-    --font-base: 26rpx;
-    --font-md: 30rpx;
-    --font-lg: 34rpx;
-    --font-xl: 38rpx;
+    --font-sm: 22rpx;
+    --font-base: 24rpx;
+    --font-md: 26rpx;
+    --font-lg: 28rpx;
+    --font-xl: 30rpx;
 }
 
 .font-size-standard {
     --font-xs: 22rpx;
-    --font-sm: 26rpx;
-    --font-base: 30rpx;
-    --font-md: 34rpx;
-    --font-lg: 38rpx;
-    --font-xl: 42rpx;
+    --font-sm: 24rpx;
+    --font-base: 26rpx;
+    --font-md: 28rpx;
+    --font-lg: 30rpx;
+    --font-xl: 32rpx;
 }
 
 .font-size-large {
     --font-xs: 24rpx;
-    --font-sm: 30rpx;
-    --font-base: 34rpx;
-    --font-md: 38rpx;
-    --font-lg: 42rpx;
-    --font-xl: 46rpx;
+    --font-sm: 26rpx;
+    --font-base: 30rpx;
+    --font-md: 32rpx;
+    --font-lg: 34rpx;
+    --font-xl: 36rpx;
 }
 
 .font-size-extra-large {
     --font-xs: 26rpx;
-    --font-sm: 34rpx;
-    --font-base: 38rpx;
-    --font-md: 42rpx;
-    --font-lg: 46rpx;
-    --font-xl: 50rpx;
+    --font-sm: 28rpx;
+    --font-base: 34rpx;
+    --font-md: 36rpx;
+    --font-lg: 38rpx;
+    --font-xl: 40rpx;
 }
 
 /* 全局字体样式配置 */
