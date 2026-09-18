@@ -4,7 +4,7 @@
 
 // 组合函数与工具
 export * from "./composables";
-export * from "./stores";
+export * from "./store";
 export * from "./plugins";
 export * from "./utils";
 export * from "./request";

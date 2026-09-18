@@ -4,7 +4,7 @@ import {
     useThemeStore,
     fontSizePresets,
     fontFamilyPresets,
-} from "../../stores/theme";
+} from "../../store/theme";
 import type {
     ThemeMode,
     FontSize,
@@ -14,7 +14,7 @@ import type {
     InitThemeOptions,
 } from "./types";
 
-export * from "../../stores/theme";
+export * from "../../store/theme";
 export type { ThemeMode, FontSize, FontFamily, ThemeColor, ThemeState, InitThemeOptions } from "./types";
 
 /**
