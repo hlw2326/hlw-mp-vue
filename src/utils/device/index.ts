@@ -1,35 +1,4 @@
-/**
- * 设备信息结构
- */
-export interface DeviceInfo {
-	appid: string
-	appName: string
-	version: string
-	versionCode: string
-	channel: string
-	deviceBrand: string
-	deviceModel: string
-	deviceId: string
-	deviceType: string
-	deviceOrientation: 'portrait' | 'landscape'
-	brand: string
-	model: string
-	system: string
-	os: string
-	pixelRatio: number
-	screenWidth: number
-	screenHeight: number
-	windowWidth: number
-	windowHeight: number
-	statusBarHeight: number
-	sdkVersion: string
-	hostName: string
-	hostVersion: string
-	hostLanguage: string
-	hostTheme: string
-	platform: string
-	language: string
-}
+import type { DeviceInfo } from './types'
 
 let deviceCache: DeviceInfo | null = null
 
@@ -95,3 +64,5 @@ export const device = {
 	},
 	clearCache: clearDeviceCache
 }
+
+export type { DeviceInfo } from './types'

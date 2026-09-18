@@ -1,5 +1,5 @@
-import { user } from './user';
-import { getDevice } from './device';
+import { user } from '../utils/user';
+import { getDevice } from '../utils/device';
 import { post, getHttpOptions } from './index';
 import type { ApiRes } from './types';
 
