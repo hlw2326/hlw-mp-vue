@@ -29,7 +29,6 @@ export default defineConfig({
       external: [
         'vue',
         'pinia',
-        '@hlw-mp/request-crypto',
         '@hlw-mp/core',
         /^@dcloudio\//,
         /^node:/,

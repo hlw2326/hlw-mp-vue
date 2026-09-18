@@ -46,7 +46,6 @@
   "dependencies": {
     "md5": "^2.3.0",
     "z-paging": "^2.8.8",
-    "@hlw-mp/request-crypto": "link:../request-crypto",
     "@hlw-mp/core": "link:../core"
   }
 }

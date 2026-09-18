@@ -26,9 +26,6 @@
             "@/*": [
                 "src/*"
             ],
-            "@hlw-mp/request-crypto": [
-                "../request-crypto/src/index.ts"
-            ],
             "@hlw-mp/core": [
                 "../core/src/index.ts"
             ]
