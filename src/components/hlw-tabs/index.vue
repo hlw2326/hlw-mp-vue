@@ -44,11 +44,7 @@
  * ```
  */
 import { computed } from "vue";
-
-export interface HlwTabItem {
-    label: string;
-    badge?: string;
-}
+export type { HlwTabItem } from "./types";
 
 interface Props {
     modelValue?: number;

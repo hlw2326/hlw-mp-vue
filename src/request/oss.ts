@@ -1,41 +1,6 @@
-/**
- * 阿里配置项
- */
-export interface OssConfig {
-	/**
-	 * 对象存储键
-	 */
-	key?: string
-	/**
-	 * 上传策略串
-	 */
-	policy?: string
-	/**
-	 * 身份标识符
-	 */
-	OSSAccessKeyId?: string
-	/**
-	 * 签名密文字
-	 */
-	signature?: string
-	/**
-	 * 主机服务址
-	 */
-	host?: string
-	/**
-	 * 服务地址串
-	 */
-	server?: string
-	/**
-	 * 文件访问址
-	 */
-	url?: string
-	/**
-	 * 目标文件名
-	 */
-	filename?: string
-	[key: string]: unknown
-}
+import type { OssConfig } from "./types";
+
+export type { OssConfig };
 
 /**
  * 直传阿里盘

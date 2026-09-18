@@ -16,3 +16,5 @@ export * from "./directives";
 export type { HlwMenuItem } from "./components/hlw-menu/types";
 export type { HlwPagingRef, HlwPagingInstance } from "./components/hlw-paging/types";
 export type { HlwAdType, HlwGridPlacement, HlwRewardAdResult } from "./components/hlw-ad/types";
+export type { HlwTabItem } from "./components/hlw-tabs/types";
+export type { HlwAdInstance, HlwInstance } from "./types";

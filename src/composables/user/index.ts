@@ -1,5 +1,6 @@
 import { computed, toRef } from "vue";
-import { useUserStore, type UserProfile } from "../../stores/user";
+import { useUserStore } from "../../stores/user";
+import type { UserProfile } from "../../stores/types";
 
 /**
  * 用户状态门面
@@ -88,4 +89,4 @@ export function useUser() {
     };
 }
 
-export type { UserProfile } from "../../stores/user";
+export type { UserProfile } from "../../stores/types";

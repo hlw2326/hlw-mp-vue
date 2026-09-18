@@ -7,28 +7,9 @@ import { computed, type ComputedRef } from "vue";
 
 declare const uni: any;
 
-/**
- * 广告配置表
- */
-export interface AdConfig {
-    adGlobalEnabled?: number | boolean;
-    adEnabledBanner?: number | boolean;
-    adEnabledGrid?: number | boolean;
-    adEnabledCustom?: number | boolean;
-    adEnabledVideo?: number | boolean;
-    adEnabledReward?: number | boolean;
-    adEnabledPopup?: number | boolean;
-    bannerUnitId?: string;
-    gridUnitId?: string;
-    customUnitId?: string;
-    videoUnitId?: string;
-    rewardUnitId?: string;
-    popupUnitId?: string;
-    vipNoAd?: number | boolean;
-    [key: string]: any;
-}
+import type { AdConfig, AdConfigProvider, AdRes } from "./types";
 
-export type AdConfigProvider = () => AdConfig;
+export type { AdConfig, AdConfigProvider, AdRes };
 
 let currentAdConfigProvider: AdConfigProvider | null = null;
 
@@ -117,18 +98,6 @@ export function useAd() {
         popupUnitId,
         getUnitId: getAdUnitId,
     };
-}
-
-/**
- * 广告播放/加载结果数据结构。
- */
-export interface AdRes {
-    /** 广告是否正常加载或成功展示完成 */
-    success: boolean;
-    /** 激励视频是否完全播放完毕 (仅激励视频有此属性) */
-    isEnded: boolean;
-    /** 加载或展示失败时的错误对象 */
-    error?: any;
 }
 
 // 缓存不同 Unit ID 的广告实例，防止重复创建导致内存泄露或回调叠加

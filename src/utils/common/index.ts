@@ -4,34 +4,9 @@
  */
 
 import { hlw } from "../../hlw";
+import type { DownloadOpt, DownloadRes } from "./types";
 
-/**
- * 文件下载选项配置接口。
- */
-export interface DownloadOpt {
-    /** 文件的网络下载链接 */
-    url: string;
-    /** 指定文件保存的本地目标路径，可选 */
-    path?: string;
-    /** 请求的自定义 HTTP 请求头 */
-    header?: Record<string, string>;
-    /** 下载进度更新的回调函数 */
-    progress?: (value: number, done: number, total: number) => void;
-}
-
-/**
- * 文件下载结果接口。
- */
-export interface DownloadRes {
-    /** 是否成功下载 */
-    ok: boolean;
-    /** 临时或保存后的本地文件路径 */
-    path?: string;
-    /** 服务器返回的 HTTP 状态码 */
-    code?: number;
-    /** 错误或提示信息 */
-    msg?: string;
-}
+export type { DownloadOpt, DownloadRes };
 
 /**
  * 拼接 URL 与 Query String。
@@ -236,7 +211,7 @@ export function download(opt: DownloadOpt): Promise<DownloadRes> {
 export async function saveImageUrl(url: string, progress?: (value: number) => void): Promise<boolean> {
     try {
         hlw.$msg.showLoading("下载中...");
-        const res = await download({ url, progress: progress ? (value) => progress(value) : undefined });
+        const res = await download({ url, progress });
         hlw.$msg.hideLoading();
 
         if (!res.ok || !res.path) {
@@ -262,7 +237,7 @@ export async function saveImageUrl(url: string, progress?: (value: number) => vo
 export async function saveVideoUrl(url: string, progress?: (value: number) => void): Promise<boolean> {
     try {
         hlw.$msg.showLoading("下载中...");
-        const res = await download({ url, progress: progress ? (value) => progress(value) : undefined });
+        const res = await download({ url, progress });
         hlw.$msg.hideLoading();
 
         if (!res.ok || !res.path) {

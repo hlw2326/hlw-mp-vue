@@ -1,80 +1,25 @@
 import { user } from '../composables/user';
 import { getDevice } from '../utils/device';
 import { post, getHttpOptions } from './index';
-import type { ApiRes } from './types';
+import type {
+    ApiRes,
+    UploadSignBase,
+    LocalUploadSign,
+    AliossUploadSign,
+    QiniuUploadSign,
+    UploadSign,
+    UploadFileParams,
+} from './types';
 
-declare const uni: any;
-
-/**
- * 基础上传凭据
- */
-export interface UploadSignBase {
-    type: 'local' | 'alioss' | 'qiniu';
-    key: string;
-    url: string;
-    server: string;
-}
-
-/**
- * 本地上传凭据
- */
-export interface LocalUploadSign extends UploadSignBase {
-    type: 'local';
-}
-
-/**
- * 阿里存储凭据
- */
-export interface AliossUploadSign extends UploadSignBase {
-    type: 'alioss';
-    OSSAccessKeyId: string;
-    policy: string;
-    Signature: string;
-    success_action_status: string;
-}
-
-/**
- * 七牛存储凭据
- */
-export interface QiniuUploadSign extends UploadSignBase {
-    type: 'qiniu';
-    token: string;
-}
-
-/**
- * 联合存储凭据
- */
-export type UploadSign = LocalUploadSign | AliossUploadSign | QiniuUploadSign;
-
-/**
- * 文件上传参数
- */
-export interface UploadFileParams {
-    /**
-     * 业务场景标识
-     */
-    biz: string;
-    /**
-     * 本地文件路径
-     */
-    filePath: string;
-    /**
-     * 文件格式后缀
-     */
-    ext?: string;
-    /**
-     * 文件字节大小
-     */
-    size?: number;
-    /**
-     * 签名接口路径
-     */
-    signUrl?: string;
-    /**
-     * 自定义请求头
-     */
-    header?: Record<string, string>;
-}
+export type {
+    ApiRes,
+    UploadSignBase,
+    LocalUploadSign,
+    AliossUploadSign,
+    QiniuUploadSign,
+    UploadSign,
+    UploadFileParams,
+};
 
 /**
  * 解析文件后缀
