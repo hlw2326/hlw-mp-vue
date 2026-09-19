@@ -1,4 +1,3 @@
-import { useUserStore } from '../store/user'
 import { getDevice } from '../utils/device'
 import { hlw } from '../hlw'
 import type { ApiRes, HttpOptions, RequestConfig, AxiosResponse, InterceptorHandler } from './types'
@@ -192,7 +191,7 @@ export function getClient(): UniHttpClient {
 	inst.interceptors.request.use(
 		async (config: RequestConfig) => {
 			const devInfo = currentOptions.getDevice ? currentOptions.getDevice() : getDevice()
-			const token = currentOptions.getToken ? currentOptions.getToken() : useUserStore().token
+			const token = currentOptions.getToken ? currentOptions.getToken() : ''
 			const time = Date.now()
 			const nonce = Math.random().toString(36).substring(2, 12)
 			const cipher = encodeURIComponent(

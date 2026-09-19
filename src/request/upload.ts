@@ -1,4 +1,3 @@
-import { useUserStore } from '../store/user';
 import { getDevice } from '../utils/device';
 import { post, getHttpOptions } from './index';
 import type {
