@@ -9,6 +9,6 @@ export const useUserStore = defineStore("user", {
         token: "",
         user: null as UserProfile | null,
     }),
-    persist: true,
     unistorage: true,
 });
+
