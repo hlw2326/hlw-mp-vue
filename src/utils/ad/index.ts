@@ -174,7 +174,7 @@ export function showPopupAd(delay = 0, unitId?: string): Promise<boolean> {
         };
 
         const executeShow = () => {
-            ad.show().catch((error: any) => {
+            ad.show().catch((error) => {
                 console.error("[Ad] Interstitial show error:", error);
                 popupCallback?.(false);
             });
@@ -206,7 +206,7 @@ export function setRewardAd(adId?: string, done?: (res: AdRes) => void): Promise
         try {
             const ad = uni.createRewardedVideoAd({ adUnitId: targetId });
             ad.onLoad?.(() => console.log(`[Ad] Rewarded video loaded: ${targetId}`));
-            ad.onError?.((errorResult: any) => {
+            ad.onError?.((errorResult) => {
                 console.error("[Ad] Rewarded video load error:", errorResult);
                 if (activeRewardId === targetId) {
                     resolveReward({ success: false, isEnded: false, error: errorResult });
@@ -216,7 +216,7 @@ export function setRewardAd(adId?: string, done?: (res: AdRes) => void): Promise
                 if (activeRewardId === targetId) {
                     const ended = !!res?.isEnded;
                     resolveReward({ success: ended, isEnded: ended });
-                    ad.load().catch((error: any) => {
+                    ad.load().catch((error) => {
                         console.warn("[Ad] Silent preload after close failed:", error);
                     });
                 }
@@ -256,27 +256,21 @@ export function showRewardAd(options?: { unitId?: string; onShowSuccess?: () => 
         });
     rewardPromise = current;
 
-    ad.show()
-        .then(() => {
-            onShowSuccess?.();
-        })
-        .catch(() => {
-            ad.load()
-                .then(() => {
-                    ad.show()
-                        .then(() => {
-                            onShowSuccess?.();
-                        })
-                        .catch((errorResult: any) => {
-                            console.error("[Ad] Rewarded video show error:", errorResult);
-                            resolveReward({ success: false, isEnded: false, error: errorResult });
-                        });
-                })
-                .catch((errorResult: any) => {
-                    console.error("[Ad] Rewarded video load error:", errorResult);
-                    resolveReward({ success: false, isEnded: false, error: errorResult });
-                });
+    ad.show().then(() => {
+        onShowSuccess?.();
+    }).catch(() => {
+        ad.load().then(() => {
+            ad.show().then(() => {
+                onShowSuccess?.();
+            }).catch((errorResult) => {
+                console.error("[Ad] Rewarded video show error:", errorResult);
+                resolveReward({ success: false, isEnded: false, error: errorResult });
+            });
+        }).catch((errorResult) => {
+            console.error("[Ad] Rewarded video load error:", errorResult);
+            resolveReward({ success: false, isEnded: false, error: errorResult });
         });
+    });
 
     return current;
 }

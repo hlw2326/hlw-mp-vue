@@ -150,8 +150,6 @@ export class UniHttpClient {
 	}
 }
 
-export { UniHttpClient }
-
 let target: UniHttpClient | null = null
 let currentOptions: HttpOptions = {}
 let lastToastTime = 0
@@ -263,9 +261,7 @@ export function setupHttp(options: Partial<HttpOptions> = {}): UniHttpClient {
  * @returns 异步响应体
  */
 export function request<T = any>(config: RequestConfig): Promise<ApiRes<T>> {
-	return getClient()
-		.request<ApiRes<T>>(config)
-		.then((res) => res.data)
+	return getClient().request<ApiRes<T>>(config).then((res) => res.data)
 }
 
 /**
