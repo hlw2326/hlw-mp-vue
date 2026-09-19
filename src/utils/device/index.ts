@@ -19,8 +19,6 @@ export function getDevice(): DeviceInfo {
 		version: appRaw.appVersion || '',
 		versionCode: appRaw.appVersionCode || '',
 		channel: (appRaw as any).appChannel || '',
-		deviceBrand: deviceRaw.brand || '',
-		deviceModel: deviceRaw.model || '',
 		deviceId: deviceRaw.deviceId || '',
 		deviceType: deviceRaw.deviceType || '',
 		deviceOrientation: ((windowRaw as any).deviceOrientation as 'portrait' | 'landscape') || 'portrait',
@@ -51,18 +49,3 @@ export function getDevice(): DeviceInfo {
 export function clearDeviceCache(): void {
 	deviceCache = null
 }
-
-/**
- * 设备门面对
- */
-export const device = {
-	get info(): DeviceInfo {
-		return getDevice()
-	},
-	get appid(): string {
-		return getDevice().appid
-	},
-	clearCache: clearDeviceCache
-}
-
-export type { DeviceInfo } from './types'

@@ -74,8 +74,9 @@ defineOptions({
     },
 });
 
-import { useTheme } from "@hlw-mp/vue";
-import { ref, computed } from "vue";
+import { useTheme } from "../../composables/theme";
+import { computed } from "vue";
+import { FONT_SIZE_VARIABLES } from "./config";
 
 const { fontSize, fontSizeClass, fontFamilyClass } = useTheme();
 
@@ -102,7 +103,7 @@ const props = defineProps({
     },
     titleSize: {
         type: String,
-        default: "",
+        default: "32rpx",
     },
     titleStyle: {
         type: String,
@@ -124,48 +125,11 @@ const title = computed(() => props.title);
 
 const navbarHeight = computed(() => {
     if (!props.isNav) return 0;
-    const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
+    const statusBarHeight = uni.getWindowInfo().statusBarHeight || 0;
     const menuButtonInfo = uni.getMenuButtonBoundingClientRect();
     const headerHeight = menuButtonInfo.bottom - statusBarHeight + 6;
     return statusBarHeight + headerHeight;
 });
-
-
-
-const FONT_SIZE_VARIABLES: Record<string, Record<string, string>> = {
-    small: {
-        "--font-xs": "20rpx",
-        "--font-sm": "22rpx",
-        "--font-base": "24rpx",
-        "--font-md": "26rpx",
-        "--font-lg": "28rpx",
-        "--font-xl": "30rpx",
-    },
-    standard: {
-        "--font-xs": "22rpx",
-        "--font-sm": "24rpx",
-        "--font-base": "26rpx",
-        "--font-md": "28rpx",
-        "--font-lg": "30rpx",
-        "--font-xl": "32rpx",
-    },
-    large: {
-        "--font-xs": "24rpx",
-        "--font-sm": "26rpx",
-        "--font-base": "30rpx",
-        "--font-md": "32rpx",
-        "--font-lg": "34rpx",
-        "--font-xl": "36rpx",
-    },
-    "extra-large": {
-        "--font-xs": "26rpx",
-        "--font-sm": "28rpx",
-        "--font-base": "34rpx",
-        "--font-md": "36rpx",
-        "--font-lg": "38rpx",
-        "--font-xl": "40rpx",
-    },
-};
 
 const pageStyle = computed(() => {
     const currentVars = FONT_SIZE_VARIABLES[fontSize.value] || FONT_SIZE_VARIABLES.standard;
@@ -175,131 +139,9 @@ const pageStyle = computed(() => {
     };
 });
 
-
-
 function onScrollToLower() {
     emit("scrolltolower");
 }
 </script>
 
-<style lang="scss">
-.hlw-page-container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-sizing: border-box;
-    font-size: var(--font-base);
-}
-
-.hlw-page-top {
-    flex-shrink: 0;
-}
-
-.hlw-page-content {
-    flex: 1;
-    height: 0;
-    min-height: 0;
-    width: 100%;
-}
-
-.hlw-page-bottom {
-    flex-shrink: 0;
-}
-
-.safe-area-bottom {
-    width: 100%;
-    height: constant(safe-area-inset-bottom);
-    height: env(safe-area-inset-bottom);
-}
-
-/* 全局系统字体大小缩放配置 */
-.font-size-small {
-    --font-xs: 20rpx;
-    --font-sm: 22rpx;
-    --font-base: 24rpx;
-    --font-md: 26rpx;
-    --font-lg: 28rpx;
-    --font-xl: 30rpx;
-}
-
-.font-size-standard {
-    --font-xs: 22rpx;
-    --font-sm: 24rpx;
-    --font-base: 26rpx;
-    --font-md: 28rpx;
-    --font-lg: 30rpx;
-    --font-xl: 32rpx;
-}
-
-.font-size-large {
-    --font-xs: 24rpx;
-    --font-sm: 26rpx;
-    --font-base: 30rpx;
-    --font-md: 32rpx;
-    --font-lg: 34rpx;
-    --font-xl: 36rpx;
-}
-
-.font-size-extra-large {
-    --font-xs: 26rpx;
-    --font-sm: 28rpx;
-    --font-base: 34rpx;
-    --font-md: 36rpx;
-    --font-lg: 38rpx;
-    --font-xl: 40rpx;
-}
-
-/* 全局字体样式配置 */
-.font-family-system {
-    font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Helvetica,
-        Arial,
-        sans-serif;
-    view,
-    text,
-    button,
-    input,
-    textarea {
-        font-family: inherit;
-    }
-}
-
-.font-family-sans {
-    font-family: "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
-    view,
-    text,
-    button,
-    input,
-    textarea {
-        font-family: inherit;
-    }
-}
-
-.font-family-serif {
-    font-family: "Songti SC", "STSong", "SimSun", "Georgia", serif;
-    view,
-    text,
-    button,
-    input,
-    textarea {
-        font-family: inherit;
-    }
-}
-
-.font-family-kaiti {
-    font-family: "Kaiti SC", "STKaiti", "KaiTi", "SimKai", serif;
-    view,
-    text,
-    button,
-    input,
-    textarea {
-        font-family: inherit;
-    }
-}
-</style>
+<style lang="scss" src="./page.scss"></style>

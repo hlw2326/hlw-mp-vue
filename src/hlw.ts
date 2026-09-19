@@ -8,8 +8,6 @@ import {
 } from "./utils/ad";
 import type { HlwAdInstance, HlwInstance } from "./types";
 
-export type { HlwAdInstance, HlwInstance } from "./types";
-
 let _msg: ReturnType<typeof useMsg> | null = null;
 
 /**

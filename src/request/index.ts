@@ -150,9 +150,9 @@ export class UniHttpClient {
 	}
 }
 
-export type AxiosInstance = UniHttpClient
+export { UniHttpClient }
 
-let target: AxiosInstance | null = null
+let target: UniHttpClient | null = null
 let currentOptions: HttpOptions = {}
 let lastToastTime = 0
 
@@ -176,7 +176,7 @@ function handleUnauthorized(message: string, callback?: (msg: string) => void): 
  * 获取请求例
  * @returns 请求实例项
  */
-export function getClient(): AxiosInstance {
+export function getClient(): UniHttpClient {
 	if (target) {
 		if (currentOptions.baseURL && !target.defaults.baseURL) {
 			target.defaults.baseURL = currentOptions.baseURL
@@ -209,11 +209,10 @@ export function getClient(): AxiosInstance {
 			config.headers['X-Client-Nonce'] = nonce
 			config.headers['X-Client-Sign'] = ''
 			config.headers['X-Client-Context'] = cipher
-			if ((devInfo as any)?.appid) {
-				config.headers['x-appid'] = (devInfo as any).appid
+			if (devInfo.appid) {
+				config.headers['x-appid'] = String(devInfo.appid)
 			}
 			if (token) {
-				config.headers['api-token'] = token
 				config.headers['x-token'] = token
 			}
 			return config
@@ -232,7 +231,7 @@ export function getClient(): AxiosInstance {
 			return response
 		},
 		(error: any) => {
-			const status = error.response?.status || error.status || error.statusCode
+			const status = error.response?.status
 			const message = error.response?.data?.msg || error.message || '网络连接异常'
 			if (status === 401 || status === 403) {
 				handleUnauthorized(message, currentOptions.onUnauthorized)
@@ -250,7 +249,7 @@ export function getClient(): AxiosInstance {
  * @param options 网络配置项
  * @returns 请求实例项
  */
-export function setupHttp(options: Partial<HttpOptions> = {}): AxiosInstance {
+export function setupHttp(options: Partial<HttpOptions> = {}): UniHttpClient {
 	currentOptions = { ...currentOptions, ...options }
 	if (target && options.baseURL) {
 		target.defaults.baseURL = options.baseURL
@@ -317,7 +316,7 @@ export function getHttpOptions(): HttpOptions {
 	return currentOptions
 }
 
-export const client = new Proxy({} as AxiosInstance, {
+export const client = new Proxy({} as UniHttpClient, {
 	get(_, prop) {
 		const inst = getClient()
 		const val = (inst as any)[prop]
@@ -326,5 +325,5 @@ export const client = new Proxy({} as AxiosInstance, {
 })
 
 export * from './oss'
-export type { RequestConfig, AxiosResponse, InterceptorHandler, ApiRes, HttpOptions, AxiosRequestConfig } from './types'
+export type { RequestConfig, AxiosResponse, InterceptorHandler, ApiRes, HttpOptions } from './types'
 export * from './upload'

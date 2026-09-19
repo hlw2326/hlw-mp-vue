@@ -14,10 +14,6 @@ export interface ShareConfig {
  * 分享操作柄
  */
 export interface ShareHandlers {
-    /** 注册好友享 */
-    onShareAppMessage: (config?: ShareConfig) => void;
-    /** 注册圈分享 */
-    onShareTimeline: (config?: ShareConfig) => void;
     /** 显分享菜单 */
     showShareMenu: () => void;
 }

@@ -42,13 +42,6 @@ export function useUser() {
         store.user = null;
     }
 
-    /**
-     * 重置状态数据
-     */
-    function reset(): void {
-        logout();
-    }
-
     return {
         token,
         user,
@@ -57,10 +50,7 @@ export function useUser() {
         setUser,
         updateUser,
         logout,
-        reset,
         store,
     };
 }
-
-export type { UserProfile } from "../../store/types";
 

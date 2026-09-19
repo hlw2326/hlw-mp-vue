@@ -126,7 +126,6 @@
 
 import { computed } from "vue";
 import type { HlwMenuItem } from "./types";
-export type { HlwMenuItem } from "./types";
 
 interface Props {
     /**

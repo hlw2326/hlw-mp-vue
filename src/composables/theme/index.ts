@@ -14,7 +14,6 @@ import type {
     InitThemeOptions,
 } from "./types";
 
-export * from "../../store/theme";
 export type { ThemeMode, FontSize, FontFamily, ThemeColor, ThemeState, InitThemeOptions } from "./types";
 
 /**
@@ -70,14 +69,6 @@ export function applyTheme(themeState: Partial<ThemeState>): void {
     if (themeState.fontFamily && ["system", "sans", "serif", "kaiti"].includes(themeState.fontFamily)) {
         store.fontFamily = themeState.fontFamily;
     }
-}
-
-/**
- * 保存主题配
- * @param themeState 目标主题配
- */
-export function saveTheme(themeState: Partial<ThemeState>): void {
-    applyTheme(themeState);
 }
 
 

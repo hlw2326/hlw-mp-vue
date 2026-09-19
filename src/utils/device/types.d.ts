@@ -7,8 +7,6 @@ export interface DeviceInfo {
 	version: string
 	versionCode: string
 	channel: string
-	deviceBrand: string
-	deviceModel: string
 	deviceId: string
 	deviceType: string
 	deviceOrientation: 'portrait' | 'landscape'

@@ -1,7 +1,4 @@
-import {
-    onShareAppMessage as registerShareAppMessage,
-    onShareTimeline as registerShareTimeline,
-} from "@dcloudio/uni-app";
+import { onShareAppMessage, onShareTimeline } from "@dcloudio/uni-app";
 import type { ShareConfig, ShareHandlers } from "./types";
 
 export type { ShareConfig, ShareHandlers };
@@ -20,36 +17,19 @@ function showShareMenu(): void {
  * 分享组合钩
  */
 export function useShare(config: ShareConfig = {}): ShareHandlers {
-    let appMessageRegistered = false;
-    let timelineRegistered = false;
+    showShareMenu();
 
-    const onShareAppMessage = (extra?: ShareConfig) => {
-        if (appMessageRegistered) return;
-        appMessageRegistered = true;
-        showShareMenu();
-        registerShareAppMessage(() => ({ ...config, ...extra }));
-    };
+    onShareAppMessage(() => ({ ...config }));
 
-    const onShareTimeline = (extra?: ShareConfig) => {
-        if (timelineRegistered) return;
-        timelineRegistered = true;
-        showShareMenu();
-        registerShareTimeline(() => {
-            const payload = { ...config, ...extra };
-            return {
-                title: payload.title,
-                query: payload.path?.split("?")[1],
-                imageUrl: payload.imageUrl,
-            };
-        });
-    };
-
-    onShareAppMessage();
-    onShareTimeline();
+    onShareTimeline(() => {
+        return {
+            title: config.title,
+            query: config.path?.split("?")[1],
+            imageUrl: config.imageUrl,
+        };
+    });
 
     return {
-        onShareAppMessage,
-        onShareTimeline,
         showShareMenu,
     };
 }

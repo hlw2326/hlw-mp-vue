@@ -1,3 +1,5 @@
+import type { DeviceInfo } from '../utils/device/types'
+
 /**
  * 请求配置项
  */
@@ -67,14 +69,12 @@ export interface HttpOptions {
 	/**
 	 * 获取设备函
 	 */
-	getDevice?: () => Record<string, unknown>
+	getDevice?: () => DeviceInfo | Record<string, any>
 	/**
 	 * 鉴权失败调
 	 */
 	onUnauthorized?: (message: string) => void
 }
-
-export type AxiosRequestConfig = RequestConfig
 
 /**
  * 基础上传凭据

@@ -44,7 +44,7 @@
  * ```
  */
 import { computed } from "vue";
-export type { HlwTabItem } from "./types";
+import type { HlwTabItem } from "./types";
 
 interface Props {
     modelValue?: number;
