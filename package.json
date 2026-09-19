@@ -34,6 +34,7 @@
   "devDependencies": {
     "@dcloudio/types": "^3.4.30",
     "@dcloudio/uni-app": "3.0.0-5000720260410001",
+    "@types/crypto-js": "^4.2.2",
     "@types/md5": "^2.3.6",
     "@types/node": "^20.19.39",
     "@vitejs/plugin-vue": "^5.2.4",
@@ -44,6 +45,8 @@
     "vue": "^3.5.34"
   },
   "dependencies": {
+    "crypto-js": "^4.2.0",
+    "jsencrypt": "^3.5.4",
     "md5": "^2.3.0",
     "z-paging": "^2.8.8"
   }

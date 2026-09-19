@@ -1,4 +1,5 @@
 import { getDevice } from '../utils/device'
+import { encryptRsa, calculateSign } from '../utils/crypto'
 import { hlw } from '../hlw'
 import type { ApiRes, HttpOptions, RequestConfig, AxiosResponse, InterceptorHandler } from './types'
 
@@ -194,23 +195,37 @@ export function getClient(): UniHttpClient {
 			const token = currentOptions.getToken ? currentOptions.getToken() : ''
 			const time = Date.now()
 			const nonce = Math.random().toString(36).substring(2, 12)
-			const cipher = encodeURIComponent(
-				JSON.stringify({
-					...devInfo,
-					token
-				})
-			)
+			const payload = {
+				...devInfo,
+				token
+			}
+			const jsonStr = JSON.stringify(payload)
+			const pubKey = currentOptions.publicKey || ''
+			const secret = currentOptions.secret || ''
+
+			let cipher = ''
+			if (pubKey) {
+				cipher = encryptRsa(jsonStr, pubKey)
+			} else {
+				cipher = encodeURIComponent(jsonStr)
+			}
+
+			const signData = config.data || config.params || {}
+			const sign = calculateSign({
+				timestamp: time,
+				nonce,
+				context: cipher,
+				secret,
+				data: signData
+			})
 
 			config.headers = config.headers || {}
 			config.headers['X-Client-Timestamp'] = String(time)
 			config.headers['X-Client-Nonce'] = nonce
-			config.headers['X-Client-Sign'] = ''
+			config.headers['X-Client-Sign'] = sign
 			config.headers['X-Client-Context'] = cipher
 			if (devInfo.appid) {
 				config.headers['x-appid'] = String(devInfo.appid)
-			}
-			if (token) {
-				config.headers['x-token'] = token
 			}
 			return config
 		},

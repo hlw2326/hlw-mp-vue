@@ -80,7 +80,7 @@ function buildHeader(cred: UploadSign, customHeader?: Record<string, string>): R
     }
     const opts = getHttpOptions();
     const devInfo = opts.getDevice ? opts.getDevice() : getDevice();
-    const token = opts.getToken ? opts.getToken() : useUserStore().token;
+    const token = opts.getToken ? opts.getToken() : '';
     const appid = (devInfo as any)?.appid || '';
 
     const headers: Record<string, string> = { ...customHeader };

@@ -74,6 +74,14 @@ export interface HttpOptions {
 	 * 鉴权失败调
 	 */
 	onUnauthorized?: (message: string) => void
+	/**
+	 * RSA 公钥（用于非对称加密 X-Client-Context）
+	 */
+	publicKey?: string
+	/**
+	 * 签名密钥（用于计算 X-Client-Sign）
+	 */
+	secret?: string
 }
 
 /**
