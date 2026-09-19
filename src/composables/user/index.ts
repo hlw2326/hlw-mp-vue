@@ -3,30 +3,12 @@ import { useUserStore } from "../../store/user";
 import type { UserProfile } from "../../store/types";
 
 /**
- * 用户状态门面
- */
-export const user = {
-    /**
-     * 获取凭证字符
-     */
-    token(): string {
-        return uni.getStorageSync("token") || "";
-    },
-    /**
-     * 获取用户资料
-     */
-    info(): Record<string, unknown> {
-        return uni.getStorageSync("userInfo") || {};
-    },
-};
-
-/**
  * 用户组合函数
  */
 export function useUser() {
     const store = useUserStore();
     const token = toRef(store, "token");
-    const userProfile = toRef(store, "user");
+    const user = toRef(store, "user");
     const isLogin = computed(() => Boolean(store.token));
 
     /**
@@ -34,7 +16,6 @@ export function useUser() {
      */
     function setToken(tokenValue: string): void {
         store.token = tokenValue;
-        uni.setStorageSync("token", tokenValue);
     }
 
     /**
@@ -42,11 +23,6 @@ export function useUser() {
      */
     function setUser(profile: UserProfile | null): void {
         store.user = profile;
-        if (profile) {
-            uni.setStorageSync("userInfo", profile);
-        } else {
-            uni.removeStorageSync("userInfo");
-        }
     }
 
     /**
@@ -55,7 +31,6 @@ export function useUser() {
     function updateUser(patch: Partial<UserProfile>): void {
         if (store.user) {
             store.user = { ...store.user, ...patch };
-            uni.setStorageSync("userInfo", store.user);
         }
     }
 
@@ -65,8 +40,6 @@ export function useUser() {
     function logout(): void {
         store.token = "";
         store.user = null;
-        uni.removeStorageSync("token");
-        uni.removeStorageSync("userInfo");
     }
 
     /**
@@ -78,7 +51,7 @@ export function useUser() {
 
     return {
         token,
-        user: userProfile,
+        user,
         isLogin,
         setToken,
         setUser,
@@ -90,3 +63,4 @@ export function useUser() {
 }
 
 export type { UserProfile } from "../../store/types";
+

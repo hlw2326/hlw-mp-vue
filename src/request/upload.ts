@@ -1,4 +1,4 @@
-import { user } from '../composables/user';
+import { useUserStore } from '../store/user';
 import { getDevice } from '../utils/device';
 import { post, getHttpOptions } from './index';
 import type {
@@ -81,7 +81,7 @@ function buildHeader(cred: UploadSign, customHeader?: Record<string, string>): R
     }
     const opts = getHttpOptions();
     const devInfo = opts.getDevice ? opts.getDevice() : getDevice();
-    const token = opts.getToken ? opts.getToken() : user.token();
+    const token = opts.getToken ? opts.getToken() : useUserStore().token;
     const appid = (devInfo as any)?.appid || '';
 
     const headers: Record<string, string> = { ...customHeader };

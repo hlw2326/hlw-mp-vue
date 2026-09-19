@@ -250,10 +250,11 @@ request.setBaseURL("https://api.hlw.com");
 request.onRequest((config) => {
   config.headers = {
     ...config.headers,
-    "Authorization": `Bearer ${uni.getStorageSync("token")}`
+    "Authorization": `Bearer ${useUserStore().token}`
   };
   return config;
 });
+
 
 // 3. 直接调用 API
 const data = await request.get("/user/info");

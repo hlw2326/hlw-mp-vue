@@ -44,49 +44,22 @@ export const THEME_COLORS: ThemeColor[] = [
     { name: "浪漫蔷薇粉", value: "#ec4899" },
 ];
 
-const THEME_KEY = "theme";
-
 /**
  * 获取存储配
  * @returns 当前主题配
  */
 export function getTheme(): ThemeState {
-    try {
-        const saved = uni.getStorageSync(THEME_KEY);
-        if (saved && typeof saved === "object") {
-            const size = (saved.fontSize || saved.size || DEFAULT_THEME.size) as FontSize;
-            const font = (saved.fontFamily || saved.font || DEFAULT_THEME.font) as FontFamily;
-            return {
-                mode: (saved.mode || DEFAULT_THEME.mode) as ThemeMode,
-                color: saved.color || DEFAULT_THEME.color,
-                size,
-                fontSize: size,
-                font,
-                fontFamily: font,
-            };
-        }
-    } catch (error) {
-        console.error("[Theme] 读取异常:", error);
-    }
-    return { ...DEFAULT_THEME };
-}
-
-/**
- * 保存主题配
- * @param themeState 目标主题配
- */
-export function saveTheme(themeState: Partial<ThemeState>): void {
-    try {
-        const current = getTheme();
-        const next = { ...current, ...themeState };
-        if (next.size && !next.fontSize) next.fontSize = next.size;
-        if (next.fontSize && !next.size) next.size = next.fontSize;
-        if (next.font && !next.fontFamily) next.fontFamily = next.font;
-        if (next.fontFamily && !next.font) next.font = next.fontFamily;
-        uni.setStorageSync(THEME_KEY, next);
-    } catch (error) {
-        console.error("[Theme] 写入异常:", error);
-    }
+    const store = useThemeStore();
+    const size = (store.fontSize || DEFAULT_THEME.size) as FontSize;
+    const font = (store.fontFamily || DEFAULT_THEME.font) as FontFamily;
+    return {
+        mode: (store.mode || DEFAULT_THEME.mode) as ThemeMode,
+        color: store.color || DEFAULT_THEME.color,
+        size,
+        fontSize: size,
+        font,
+        fontFamily: font,
+    };
 }
 
 /**
@@ -94,23 +67,27 @@ export function saveTheme(themeState: Partial<ThemeState>): void {
  * @param themeState 主题配置项
  */
 export function applyTheme(themeState: Partial<ThemeState>): void {
+    const store = useThemeStore();
     const targetSize = themeState.fontSize || themeState.size;
     const targetFont = themeState.fontFamily || themeState.font;
-    try {
-        const store = useThemeStore();
-        if (themeState.mode) store.mode = themeState.mode;
-        if (themeState.color) store.color = themeState.color;
-        if (targetSize && ["small", "standard", "large", "extra-large"].includes(targetSize)) {
-            store.fontSize = targetSize;
-        }
-        if (targetFont && ["system", "sans", "serif", "kaiti"].includes(targetFont)) {
-            store.fontFamily = targetFont;
-        }
-    } catch {
-        // 容错忽略
+    if (themeState.mode) store.mode = themeState.mode;
+    if (themeState.color) store.color = themeState.color;
+    if (targetSize && ["small", "standard", "large", "extra-large"].includes(targetSize)) {
+        store.fontSize = targetSize;
     }
-    saveTheme(themeState);
+    if (targetFont && ["system", "sans", "serif", "kaiti"].includes(targetFont)) {
+        store.fontFamily = targetFont;
+    }
 }
+
+/**
+ * 保存主题配
+ * @param themeState 目标主题配
+ */
+export function saveTheme(themeState: Partial<ThemeState>): void {
+    applyTheme(themeState);
+}
+
 
 /**
  * 注册主题器
@@ -158,7 +135,6 @@ export function useTheme() {
      */
     function setMode(targetMode: ThemeMode): void {
         store.mode = targetMode;
-        saveTheme({ mode: targetMode });
     }
 
     /**
@@ -166,7 +142,6 @@ export function useTheme() {
      */
     function setColor(hexColor: string): void {
         store.color = hexColor;
-        saveTheme({ color: hexColor });
     }
 
     /**
@@ -174,7 +149,6 @@ export function useTheme() {
      */
     function setSize(targetSize: FontSize): void {
         store.fontSize = targetSize;
-        saveTheme({ size: targetSize, fontSize: targetSize });
     }
 
     /**
@@ -183,7 +157,6 @@ export function useTheme() {
     function setFontSize(targetSize: string): void {
         if (["small", "standard", "large", "extra-large"].includes(targetSize)) {
             store.fontSize = targetSize;
-            saveTheme({ size: targetSize as FontSize, fontSize: targetSize as FontSize });
         }
     }
 
@@ -193,7 +166,6 @@ export function useTheme() {
     function setFontFamily(targetFont: string): void {
         if (["system", "sans", "serif", "kaiti"].includes(targetFont)) {
             store.fontFamily = targetFont;
-            saveTheme({ font: targetFont as FontFamily, fontFamily: targetFont as FontFamily });
         }
     }
 
@@ -205,7 +177,6 @@ export function useTheme() {
         store.color = DEFAULT_THEME.color;
         store.fontSize = DEFAULT_THEME.size;
         store.fontFamily = DEFAULT_THEME.fontFamily || "system";
-        saveTheme(DEFAULT_THEME);
     }
 
     /**

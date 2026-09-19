@@ -1,4 +1,4 @@
-import { user } from '../composables/user'
+import { useUserStore } from '../store/user'
 import { getDevice } from '../utils/device'
 import { hlw } from '../hlw'
 import type { ApiRes, HttpOptions, RequestConfig, AxiosResponse, InterceptorHandler } from './types'
@@ -194,7 +194,7 @@ export function getClient(): AxiosInstance {
 	inst.interceptors.request.use(
 		async (config: RequestConfig) => {
 			const devInfo = currentOptions.getDevice ? currentOptions.getDevice() : getDevice()
-			const token = currentOptions.getToken ? currentOptions.getToken() : user.token()
+			const token = currentOptions.getToken ? currentOptions.getToken() : useUserStore().token
 			const time = Date.now()
 			const nonce = Math.random().toString(36).substring(2, 12)
 			const cipher = encodeURIComponent(

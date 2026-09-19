@@ -10,4 +10,5 @@ export const useUserStore = defineStore("user", {
         user: null as UserProfile | null,
     }),
     persist: true,
+    unistorage: true,
 });

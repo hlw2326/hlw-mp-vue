@@ -64,4 +64,6 @@ export const useThemeStore = defineStore("theme", {
         fontFamily: "system",
     }),
     persist: true,
+    unistorage: true,
 });
+
