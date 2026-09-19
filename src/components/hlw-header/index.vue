@@ -65,24 +65,15 @@
 import { ref, computed, useSlots } from "vue";
 
 const getNavBarContentHeight = (): number => {
-    try {
-        const menuInfo = uni.getMenuButtonBoundingClientRect?.();
-        if (!menuInfo) return 44;
-        const systemInfo = uni.getSystemInfoSync();
-        return (menuInfo.top - systemInfo.statusBarHeight!) * 2 + menuInfo.height;
-    } catch {
-        return 44;
-    }
+    const menuInfo = uni.getMenuButtonBoundingClientRect();
+    const systemInfo = uni.getSystemInfoSync();
+    return (menuInfo.top - systemInfo.statusBarHeight!) * 2 + menuInfo.height;
 };
 
 const getStatusBarHeight = (): number => {
-    try {
-        const systemInfo = uni.getSystemInfoSync();
-        return systemInfo.statusBarHeight || 20;
-    } catch {
-        return 20;
-    }
+    return uni.getSystemInfoSync().statusBarHeight || 20;
 };
+
 
 const NAV_BAR_CONTENT_HEIGHT = getNavBarContentHeight();
 

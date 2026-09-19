@@ -23,9 +23,7 @@ export type { ThemeMode, FontSize, FontFamily, ThemeColor, ThemeState, InitTheme
 export const DEFAULT_THEME: ThemeState = {
     mode: "light",
     color: "#08c060",
-    size: "standard",
     fontSize: "standard",
-    font: "system",
     fontFamily: "system",
 };
 
@@ -50,15 +48,11 @@ export const THEME_COLORS: ThemeColor[] = [
  */
 export function getTheme(): ThemeState {
     const store = useThemeStore();
-    const size = (store.fontSize || DEFAULT_THEME.size) as FontSize;
-    const font = (store.fontFamily || DEFAULT_THEME.font) as FontFamily;
     return {
         mode: (store.mode || DEFAULT_THEME.mode) as ThemeMode,
         color: store.color || DEFAULT_THEME.color,
-        size,
-        fontSize: size,
-        font,
-        fontFamily: font,
+        fontSize: (store.fontSize || DEFAULT_THEME.fontSize) as FontSize,
+        fontFamily: (store.fontFamily || DEFAULT_THEME.fontFamily) as FontFamily,
     };
 }
 
@@ -68,15 +62,13 @@ export function getTheme(): ThemeState {
  */
 export function applyTheme(themeState: Partial<ThemeState>): void {
     const store = useThemeStore();
-    const targetSize = themeState.fontSize || themeState.size;
-    const targetFont = themeState.fontFamily || themeState.font;
     if (themeState.mode) store.mode = themeState.mode;
     if (themeState.color) store.color = themeState.color;
-    if (targetSize && ["small", "standard", "large", "extra-large"].includes(targetSize)) {
-        store.fontSize = targetSize;
+    if (themeState.fontSize && ["small", "standard", "large", "extra-large"].includes(themeState.fontSize)) {
+        store.fontSize = themeState.fontSize;
     }
-    if (targetFont && ["system", "sans", "serif", "kaiti"].includes(targetFont)) {
-        store.fontFamily = targetFont;
+    if (themeState.fontFamily && ["system", "sans", "serif", "kaiti"].includes(themeState.fontFamily)) {
+        store.fontFamily = themeState.fontFamily;
     }
 }
 
@@ -115,9 +107,7 @@ export function useTheme() {
 
     const mode: Ref<ThemeMode> = toRef(store, "mode") as unknown as Ref<ThemeMode>;
     const color: Ref<string> = toRef(store, "color");
-    const size: Ref<FontSize> = toRef(store, "fontSize") as unknown as Ref<FontSize>;
     const fontSize: Ref<string> = toRef(store, "fontSize");
-    const font: Ref<FontFamily> = toRef(store, "fontFamily") as unknown as Ref<FontFamily>;
     const fontFamily: Ref<string> = toRef(store, "fontFamily");
 
     const fontSizeClass: ComputedRef<string> = computed(() => {
@@ -145,13 +135,6 @@ export function useTheme() {
     }
 
     /**
-     * 设置字号大
-     */
-    function setSize(targetSize: FontSize): void {
-        store.fontSize = targetSize;
-    }
-
-    /**
      * 设置字号字
      */
     function setFontSize(targetSize: string): void {
@@ -175,22 +158,13 @@ export function useTheme() {
     function resetTheme(): void {
         store.mode = DEFAULT_THEME.mode;
         store.color = DEFAULT_THEME.color;
-        store.fontSize = DEFAULT_THEME.size;
-        store.fontFamily = DEFAULT_THEME.fontFamily || "system";
-    }
-
-    /**
-     * 重置状态数
-     */
-    function reset(): void {
-        resetTheme();
+        store.fontSize = DEFAULT_THEME.fontSize;
+        store.fontFamily = DEFAULT_THEME.fontFamily;
     }
 
     return {
         mode,
         color,
-        size,
-        font,
         fontSize,
         fontSizeClass,
         fontFamily,
@@ -200,14 +174,13 @@ export function useTheme() {
         fontFamilyPresets,
         setMode,
         setColor,
-        setSize,
         setFontSize,
         setFontFamily,
         resetTheme,
-        reset,
         applyTheme,
         getTheme,
         initTheme,
         store,
     };
 }
+

@@ -34,13 +34,9 @@
  */
 import { computed, ref } from "vue";
 
-const statusBarHeight: number = uni.getSystemInfoSync()?.statusBarHeight || 0;
-let menuButtonInfo: any = null;
-try {
-    menuButtonInfo = uni.getMenuButtonBoundingClientRect();
-} catch (error) {
-    console.warn(error);
-}
+const statusBarHeight: number = uni.getSystemInfoSync().statusBarHeight || 0;
+const menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+
 
 const props = defineProps({
     isBar: {
@@ -98,10 +94,7 @@ const barStyle = computed(() => {
     return style;
 });
 
-const headerHeight = ref<number>(44);
-if (menuButtonInfo && typeof menuButtonInfo.bottom === "number" && menuButtonInfo.bottom > 0) {
-    headerHeight.value = menuButtonInfo.bottom - statusBarHeight + 6;
-}
+const headerHeight = ref<number>(menuButtonInfo.bottom - statusBarHeight + 6);
 const navbarHeight = ref(headerHeight.value + statusBarHeight);
 
 function tapBack() {

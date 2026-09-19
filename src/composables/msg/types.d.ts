@@ -1,7 +1,7 @@
 /**
  * 提示图标型
  */
-export type ToastIcon = "success" | "loading" | "error" | "none" | "fail" | "exception";
+export type ToastIcon = "success" | "loading" | "error" | "none";
 
 /**
  * 提示时长期
@@ -56,16 +56,13 @@ export interface HlwMsg {
     success(message: string): void;
     /** 失败提示框 */
     error(message: string): void;
-    /** 失败提示别 */
-    fail(message: string): void;
     /** 显全局加载 */
     showLoading(message?: string): void;
     /** 隐全局加载 */
     hideLoading(): void;
     /** 弹出确认框 */
-    confirm(opts: ModalOptions): Promise<boolean>;
-    /** 确认框别名 */
     modal(opts: ModalOptions): Promise<boolean>;
     /** 标题进度条 */
     setLoadingBar(progress: number): void;
 }
+

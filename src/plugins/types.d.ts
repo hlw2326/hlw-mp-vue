@@ -10,9 +10,8 @@ export interface PersistOptions {
 
 declare module "pinia" {
     interface DefineStoreOptionsBase<S, Store> {
-        /** 兼容旧版配置 */
+        /** 存储持久配置 */
         unistorage?: boolean | PersistOptions;
-        /** 标准持久配置 */
-        persist?: boolean | PersistOptions;
     }
 }
+

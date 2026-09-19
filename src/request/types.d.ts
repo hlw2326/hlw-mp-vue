@@ -149,9 +149,8 @@ export interface OssConfig {
 	signature?: string
 	/** 主机服务址 */
 	host?: string
-	/** 服务地址串 */
-	server?: string
 	/** 文件访问址 */
+
 	url?: string
 	/** 目标文件名 */
 	filename?: string

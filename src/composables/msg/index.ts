@@ -39,12 +39,9 @@ export function useMsg(): HlwMsg {
             position = "center",
         } = typeof opts === "string" ? { message: opts } : opts;
 
-        // 兼容映射旧版自定义失败图标到标准 error 图标
-        const mappedIcon = (icon === "fail" || icon === "exception") ? "error" : icon;
-
         uni.showToast({
             title: message,
-            icon: mappedIcon as "success" | "loading" | "error" | "none",
+            icon,
             image,
             duration,
             mask,
@@ -81,9 +78,9 @@ export function useMsg(): HlwMsg {
     }
 
     /**
-     * 显示确认弹窗，返回用户是否点击确认。
+     * 弹出确认窗
      */
-    function confirm(opts: ModalOptions): Promise<boolean> {
+    function modal(opts: ModalOptions): Promise<boolean> {
         return new Promise((resolve) => {
             const {
                 title = "提示",
@@ -109,7 +106,7 @@ export function useMsg(): HlwMsg {
     }
 
     /**
-     * 通过标题文本模拟简单进度条展示。
+     * 标题进度条
      */
     function setLoadingBar(progress: number) {
         const clamped = Math.max(0, Math.min(100, progress));
@@ -123,11 +120,10 @@ export function useMsg(): HlwMsg {
         toast,
         success,
         error,
-        fail: error,
         showLoading,
         hideLoading,
-        confirm,
-        modal: confirm,
+        modal,
         setLoadingBar,
     };
 }
+

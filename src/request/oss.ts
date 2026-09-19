@@ -24,7 +24,7 @@ export async function uploadOss(
 	if (oss.signature) formData.signature = String(oss.signature);
 	if (oss['x-oss-security-token']) formData['x-oss-security-token'] = String(oss['x-oss-security-token']);
 
-	const target = String(oss.host || oss.server || '');
+	const target = String(oss.host || '');
 
 	return new Promise((resolve, reject) => {
 		uni.uploadFile({

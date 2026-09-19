@@ -7,8 +7,9 @@ import type { PersistOptions } from "./types";
 export function createPersist() {
     return (context: PiniaPluginContext): void => {
         const { store, options } = context;
-        const config = options.persist ?? options.unistorage;
+        const config = options.unistorage;
         if (!config) return;
+
 
         const isCustom = typeof config === "object" && config !== null;
         const storageKey = isCustom && config.key ? config.key : store.$id;
@@ -48,7 +49,3 @@ export function createPersist() {
     };
 }
 
-/**
- * 兼容旧版命名
- */
-export const createUnistorage = createPersist;

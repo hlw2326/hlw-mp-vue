@@ -124,18 +124,13 @@ const title = computed(() => props.title);
 
 const navbarHeight = computed(() => {
     if (!props.isNav) return 0;
-    const statusBarHeight = uni.getSystemInfoSync()?.statusBarHeight || 0;
-    let headerHeight = 44;
-    try {
-        const menuButtonInfo = uni.getMenuButtonBoundingClientRect();
-        if (menuButtonInfo && typeof menuButtonInfo.bottom === "number" && menuButtonInfo.bottom > 0) {
-            headerHeight = menuButtonInfo.bottom - statusBarHeight + 6;
-        }
-    } catch (error) {
-        console.warn(error);
-    }
+    const statusBarHeight = uni.getSystemInfoSync().statusBarHeight || 0;
+    const menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+    const headerHeight = menuButtonInfo.bottom - statusBarHeight + 6;
     return statusBarHeight + headerHeight;
 });
+
+
 
 const FONT_SIZE_VARIABLES: Record<string, Record<string, string>> = {
     small: {

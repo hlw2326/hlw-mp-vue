@@ -61,8 +61,9 @@ export function getAdUnitId(type: "banner" | "grid" | "custom" | "video" | "rewa
         }
         case "custom": {
             const enabled = config.adEnabledCustom === undefined || config.adEnabledCustom === 1 || config.adEnabledCustom === true;
-            return enabled ? (config.customUnitId || config.bannerUnitId || "") : "";
+            return enabled ? (config.customUnitId || "") : "";
         }
+
         case "reward": {
             const enabled = config.adEnabledReward === undefined || config.adEnabledReward === 1 || config.adEnabledReward === true;
             return enabled ? (config.rewardUnitId || "") : "";

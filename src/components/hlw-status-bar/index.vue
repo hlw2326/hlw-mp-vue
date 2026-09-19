@@ -60,7 +60,7 @@ const props = defineProps({
     },
 });
 
-const statusBarHeight: number = uni.getSystemInfoSync()?.statusBarHeight || 20;
+const statusBarHeight: number = uni.getSystemInfoSync().statusBarHeight || 20;
 
 const statusBarStyle = computed(() => {
     const style: Record<string, any> = {

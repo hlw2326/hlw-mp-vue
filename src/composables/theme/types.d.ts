@@ -27,11 +27,10 @@ export interface ThemeColor {
 export interface ThemeState {
     mode: ThemeMode;
     color: string;
-    size: FontSize;
-    fontSize?: FontSize;
-    font?: FontFamily;
-    fontFamily?: FontFamily;
+    fontSize: FontSize;
+    fontFamily: FontFamily;
 }
+
 
 /**
  * 初始配置项
