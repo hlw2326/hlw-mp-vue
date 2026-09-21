@@ -1,7 +1,7 @@
 /**
  * 广告类型值
  */
-export type HlwAdType = "custom" | "banner" | "grid" | "reward";
+export type HlwAdType = "custom" | "grid" | "reward";
 
 /**
  * 格子定位值

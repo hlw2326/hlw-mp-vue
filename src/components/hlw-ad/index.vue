@@ -1,32 +1,27 @@
 <template>
-    <!-- 激励视频模式：作为点击触发器包裹插槽内容 -->
+    <!-- 激励广告 -->
     <view
-        v-if="type === 'reward' && visible"
-        :class="['hlw-ad', 'hlw-ad--reward', customClass]"
+        v-if="type === 'reward' && isReady"
+        class="hlw-ad hlw-ad--reward"
+        :class="customClass"
         :style="customStyle"
         @tap="open"
     >
         <slot />
     </view>
 
-    <!-- 展示型广告模式：Banner / Grid / Custom -->
+    <!-- 展示广告 -->
     <view
-        v-else-if="visible"
-        :class="['hlw-ad', `hlw-ad--${type}`, type === 'grid' ? `hlw-ad--${placement}` : '', customClass]"
-        :style="style"
+        v-else-if="isReady"
+        class="hlw-ad"
+        :class="[`hlw-ad--${type}`, type === 'grid' ? `hlw-ad--${placement}` : '', customClass]"
+        :style="customStyle"
     >
-        <ad
-            v-if="type === 'banner'"
-            type="banner"
-            :unit-id="resolvedUnitId"
-            @load="onLoad"
-            @error="onError"
-        />
         <ad-custom
-            v-else
-            :unit-id="resolvedUnitId"
+            :unit-id="finalUnitId"
             @load="onLoad"
             @error="onError"
+            @close="onClose"
         />
     </view>
 </template>
@@ -39,73 +34,66 @@ import type { HlwAdType, HlwGridPlacement, HlwRewardAdResult } from "./types";
 defineOptions({ name: "HlwAd" });
 
 interface Props {
-    /** 广告类型值，默认 custom */
+    /** 广告类型 */
     type?: HlwAdType;
-    /** 广告单元号 */
+    /** 单元标识 */
     unitId?: string;
-    /** 格子定位值，默认 center */
+    /** 悬浮定位 */
     placement?: HlwGridPlacement;
-    /** 自定义样式 */
-    customStyle?: string;
-    /** 自定义类名 */
+    /** 自定类名 */
     customClass?: string;
-    /** 圆角大小值，默认 10rpx */
-    radius?: string;
-    /** 退出重试否，默认 true */
+    /** 自定样式 */
+    customStyle?: string;
+    /** 退出重试 */
     retryConfirm?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     type: "custom",
-    unitId: "",
+    unitId: undefined,
     placement: "center",
-    customStyle: "",
     customClass: "",
-    radius: "10rpx",
+    customStyle: "",
     retryConfirm: true,
 });
 
 const emit = defineEmits<{
-    (event: "load", payload: any): void;
-    (event: "error", payload: any): void;
-    (event: "close", result: HlwRewardAdResult): void;
+    (event: "load", detail: unknown): void;
+    (event: "error", detail: unknown): void;
+    (event: "close", result?: unknown): void;
 }>();
 
 const isClicked = ref(false);
 
-const resolvedUnitId = computed(() => {
-    if (props.unitId) return props.unitId;
+const finalUnitId = computed(() => {
+    // 显式传参
+    if (props.unitId !== undefined) {
+        return props.unitId.trim();
+    }
+    // 全局配置
     return getAdUnitId(props.type);
 });
 
-const visible = computed(() => !!resolvedUnitId.value);
+const isReady = computed(() => !!finalUnitId.value);
 
-const style = computed(() => {
-    const styles: string[] = [];
-    if (props.type !== "grid" && props.radius) {
-        styles.push(`border-radius: ${props.radius}`);
-    }
-    if (props.customStyle) {
-        styles.push(props.customStyle);
-    }
-    return styles.join(";");
-});
-
-function onLoad(event: any): void {
+function onLoad(event: unknown): void {
     emit("load", event);
 }
 
-function onError(event: any): void {
-    console.warn(`[HlwAd] type=${props.type} error`, event?.detail);
+function onError(event: unknown): void {
     emit("error", event);
 }
 
+function onClose(event: unknown): void {
+    emit("close", event);
+}
+
 async function open(): Promise<void> {
-    if (props.type !== "reward" || isClicked.value || !resolvedUnitId.value) return;
+    if (props.type !== "reward" || isClicked.value || !finalUnitId.value) return;
     isClicked.value = true;
     try {
         const result = await playRewardAd({
-            unitId: resolvedUnitId.value,
+            unitId: finalUnitId.value,
             retryConfirm: props.retryConfirm,
         });
         emit("close", {
@@ -122,49 +110,47 @@ async function open(): Promise<void> {
 defineExpose({ open });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .hlw-ad {
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    background: var(--surface-card, #ffffff);
+    width: 100%;
+    background: transparent;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    ad-custom {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto 0;
+    }
 }
 
 .hlw-ad--reward {
-    display: block;
-    border-radius: 0;
-    overflow: visible;
-    background: transparent;
+    display: inline-block;
+    width: auto;
 }
 
-/* 格子广告：默认居中悬浮；微信硬性规则要求 wrapper 透明无圆角，customStyle 可覆盖 */
 .hlw-ad--grid {
     position: fixed;
     z-index: 99;
-    border-radius: 0;
-    overflow: visible;
-    background: transparent;
+    width: auto;
 }
 
 .hlw-ad--left-top {
     top: 24rpx;
-    right: auto;
-    bottom: auto;
     left: 24rpx;
-    transform: none;
 }
 
 .hlw-ad--right-top {
     top: 24rpx;
     right: 24rpx;
-    bottom: auto;
-    left: auto;
-    transform: none;
 }
 
 .hlw-ad--left-middle {
     top: 50%;
-    right: auto;
-    bottom: auto;
     left: 24rpx;
     transform: translateY(-50%);
 }
@@ -172,31 +158,21 @@ defineExpose({ open });
 .hlw-ad--right-middle {
     top: 50%;
     right: 24rpx;
-    bottom: auto;
-    left: auto;
     transform: translateY(-50%);
 }
 
 .hlw-ad--left-bottom {
-    top: auto;
-    right: auto;
     bottom: 200rpx;
     left: 24rpx;
-    transform: none;
 }
 
 .hlw-ad--right-bottom {
-    top: auto;
-    right: 24rpx;
     bottom: 200rpx;
-    left: auto;
-    transform: none;
+    right: 24rpx;
 }
 
 .hlw-ad--center {
     top: 50%;
-    right: auto;
-    bottom: auto;
     left: 50%;
     transform: translate(-50%, -50%);
 }
