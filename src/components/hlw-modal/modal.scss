@@ -25,22 +25,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 80rpx;
-    padding: 28rpx 72rpx 0;
+    min-height: 96rpx;
+    padding: 28rpx 72rpx;
+    border-bottom: 1rpx dashed var(--border-color-light, #ececec);
 }
 
 .hlw-modal-title {
     text-align: center;
     font-size: var(--font-base, 28rpx);
-    font-weight: 600;
+    font-weight: 400;
     color: var(--text-primary, #1e293b);
     line-height: 1.35;
-    letter-spacing: 2rpx;
+    letter-spacing: 3rpx;
 }
 
 .hlw-modal-close {
     position: absolute;
-    top: 20rpx;
+    top: 50%;
+    transform: translateY(-50%);
     right: 20rpx;
     display: flex;
     align-items: center;
@@ -71,7 +73,7 @@
 
 .hlw-modal-footer {
     display: flex;
-    border-top: 1rpx solid var(--border-color-light, #f1f5f9);
+    border-top: 1rpx dashed var(--border-color-light, #ececec);
 }
 
 .hlw-modal-btn {
@@ -80,12 +82,13 @@
     text-align: center;
     font-size: var(--font-sm, 26rpx);
     font-weight: 500;
+    letter-spacing: 3rpx;
 
     &:active { background: var(--surface-card-muted, #f8fafc); }
 
     &--cancel {
         color: var(--text-muted, #64748b);
-        border-right: 1rpx solid var(--border-color-light, #f1f5f9);
+        border-right: 1rpx dashed var(--border-color-light, #ececec);
     }
 
     &--confirm {
