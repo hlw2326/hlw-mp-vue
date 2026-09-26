@@ -123,6 +123,7 @@ export function useMsg(): HlwMsg {
         showLoading,
         hideLoading,
         modal,
+        confirm: modal,
         setLoadingBar,
     };
 }

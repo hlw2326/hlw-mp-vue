@@ -153,7 +153,11 @@ export function setPopupAd(adId?: string, done?: (ok: boolean) => void): boolean
 
 // 展示插屏广告
 export function showPopupAd(delay = 0, unitId?: string): Promise<boolean> {
-    const targetId = unitId || activePopupId || getAdUnitId("popup");
+    const config = getAdConfig();
+    const isGlobalEnabled = config.adGlobalEnabled === undefined || config.adGlobalEnabled === 1 || config.adGlobalEnabled === true;
+    if (!isGlobalEnabled) return Promise.resolve(false);
+
+    const targetId = unitId || getAdUnitId("popup") || activePopupId;
     if (!targetId) return Promise.resolve(false);
 
     if (!setPopupAd(targetId)) {
@@ -174,7 +178,7 @@ export function showPopupAd(delay = 0, unitId?: string): Promise<boolean> {
         };
 
         const executeShow = () => {
-            ad.show().catch((error) => {
+            ad.show().catch((error: any) => {
                 console.error("[Ad] Interstitial show error:", error);
                 popupCallback?.(false);
             });
@@ -206,7 +210,7 @@ export function setRewardAd(adId?: string, done?: (res: AdRes) => void): Promise
         try {
             const ad = uni.createRewardedVideoAd({ adUnitId: targetId });
             ad.onLoad?.(() => console.log(`[Ad] Rewarded video loaded: ${targetId}`));
-            ad.onError?.((errorResult) => {
+            ad.onError?.((errorResult: any) => {
                 console.error("[Ad] Rewarded video load error:", errorResult);
                 if (activeRewardId === targetId) {
                     resolveReward({ success: false, isEnded: false, error: errorResult });
@@ -216,7 +220,7 @@ export function setRewardAd(adId?: string, done?: (res: AdRes) => void): Promise
                 if (activeRewardId === targetId) {
                     const ended = !!res?.isEnded;
                     resolveReward({ success: ended, isEnded: ended });
-                    ad.load().catch((error) => {
+                    ad.load().catch((error: any) => {
                         console.warn("[Ad] Silent preload after close failed:", error);
                     });
                 }
@@ -262,11 +266,11 @@ export function showRewardAd(options?: { unitId?: string; onShowSuccess?: () => 
         ad.load().then(() => {
             ad.show().then(() => {
                 onShowSuccess?.();
-            }).catch((errorResult) => {
+            }).catch((errorResult: any) => {
                 console.error("[Ad] Rewarded video show error:", errorResult);
                 resolveReward({ success: false, isEnded: false, error: errorResult });
             });
-        }).catch((errorResult) => {
+        }).catch((errorResult: any) => {
             console.error("[Ad] Rewarded video load error:", errorResult);
             resolveReward({ success: false, isEnded: false, error: errorResult });
         });

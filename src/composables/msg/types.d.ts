@@ -62,6 +62,8 @@ export interface HlwMsg {
     hideLoading(): void;
     /** 弹出确认框 */
     modal(opts: ModalOptions): Promise<boolean>;
+    /** 确认对话框 (modal 别名) */
+    confirm(opts: ModalOptions): Promise<boolean>;
     /** 标题进度条 */
     setLoadingBar(progress: number): void;
 }

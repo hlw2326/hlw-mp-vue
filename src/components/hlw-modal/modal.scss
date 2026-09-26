@@ -4,33 +4,69 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(15, 23, 42, 0.52);
     z-index: 1000;
     animation: hlw-fade-in 0.2s;
 }
 
 .hlw-modal {
+    position: relative;
     width: 80%;
     max-width: 600rpx;
     background: var(--surface-card, #ffffff);
-    border-radius: var(--radius-xl, 32rpx);
+    border-radius: var(--radius-xl, 28rpx);
     overflow: hidden;
+    box-shadow: 0 20rpx 60rpx rgba(15, 23, 42, 0.16);
     animation: hlw-scale-in 0.25s ease;
 }
 
+.hlw-modal-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80rpx;
+    padding: 28rpx 72rpx 0;
+}
+
 .hlw-modal-title {
-    padding: 40rpx 32rpx 0;
     text-align: center;
-    font-size: var(--font-md, 34rpx);
+    font-size: var(--font-base, 28rpx);
     font-weight: 600;
     color: var(--text-primary, #1e293b);
+    line-height: 1.35;
+    letter-spacing: 2rpx;
+}
+
+.hlw-modal-close {
+    position: absolute;
+    top: 20rpx;
+    right: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52rpx;
+    height: 52rpx;
+    border-radius: 50%;
+    color: var(--text-subtle, #94a3b8);
+    font-size: 24rpx;
+
+    &:active {
+        color: var(--text-primary, #1e293b);
+        background: var(--surface-card-muted, #f8fafc);
+    }
+}
+
+.hlw-modal-close-icon {
+    font-size: 24rpx;
+    line-height: 1;
 }
 
 .hlw-modal-body {
-    font-size: var(--font-base, 30rpx);
+    font-size: var(--font-sm, 26rpx);
     color: var(--text-secondary, #475569);
     text-align: center;
-    line-height: 1.6;
+    line-height: 1.55;
 }
 
 .hlw-modal-footer {
@@ -40,9 +76,9 @@
 
 .hlw-modal-btn {
     flex: 1;
-    padding: 24rpx 0;
+    padding: 22rpx 0;
     text-align: center;
-    font-size: var(--font-base, 30rpx);
+    font-size: var(--font-sm, 26rpx);
     font-weight: 500;
 
     &:active { background: var(--surface-card-muted, #f8fafc); }
@@ -63,6 +99,6 @@
 }
 
 @keyframes hlw-scale-in {
-    from { transform: scale(0.9); opacity: 0; }
+    from { transform: scale(0.92); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }

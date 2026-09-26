@@ -11,26 +11,26 @@
                      :border="border">
         </hlw-nav-bar>
 
-        <!-- 上插槽 -->
-        <view class="hlw-page-top">
+        <!-- 顶部插槽 -->
+        <view v-if="$slots.top" class="hlw-page-top">
             <slot name="top"></slot>
         </view>
 
-        <!-- 内容插槽 scroll-view -->
+        <!-- 内容插槽 -->
         <scroll-view 
             class="hlw-page-content"
             scroll-y
             @scrolltolower="onScrollToLower"
         >
             <slot></slot>
-            <view class="h-[60rpx]"></view>
-            <view class="safe-area-bottom"></view>
+            <view class="h-[20rpx]"></view>
+            <view v-if="!$slots.bottom && hasSafeArea" class="safe-area-bottom"></view>
         </scroll-view>
 
-        <!-- 下插槽 -->
-        <view class="hlw-page-bottom">
+        <!-- 底部插槽 -->
+        <view v-if="$slots.bottom" class="hlw-page-bottom">
             <slot name="bottom"></slot>
-            <view class="safe-area-bottom"></view>
+            <view v-if="hasSafeArea" class="safe-area-bottom"></view>
         </view>
     </view>
 </template>
@@ -116,12 +116,21 @@ const props = defineProps({
     border: {
         type: Boolean,
         default: true,
-    }
+    },
+    safeArea: {
+        type: Boolean,
+        default: undefined,
+    },
 });
 
 const emit = defineEmits(["scrolltolower"]);
 
 const title = computed(() => props.title);
+
+const hasSafeArea = computed(() => {
+    if (props.safeArea !== undefined) return props.safeArea;
+    return props.isBack;
+});
 
 const navbarHeight = computed(() => {
     if (!props.isNav) return 0;

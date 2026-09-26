@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { getAdUnitId, playRewardAd } from "../../utils/ad";
+import { getAdUnitId, getAdConfig, playRewardAd } from "../../utils/ad";
 import type { HlwAdType, HlwGridPlacement, HlwRewardAdResult } from "./types";
 
 defineOptions({ name: "HlwAd" });
@@ -66,6 +66,10 @@ const emit = defineEmits<{
 const isClicked = ref(false);
 
 const finalUnitId = computed(() => {
+    const config = getAdConfig();
+    const isGlobalEnabled = config.adGlobalEnabled === undefined || config.adGlobalEnabled === 1 || config.adGlobalEnabled === true;
+    if (!isGlobalEnabled) return "";
+
     // 显式传参
     if (props.unitId !== undefined) {
         return props.unitId.trim();
