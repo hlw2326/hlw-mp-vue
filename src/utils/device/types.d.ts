@@ -27,4 +27,8 @@ export interface DeviceInfo {
 	hostTheme: string
 	platform: string
 	language: string
+	networkType: string
+	benchmarkLevel: number
+	theme: string
+	fontSizeSetting: number
 }

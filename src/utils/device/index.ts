@@ -1,20 +1,43 @@
 import type { DeviceInfo } from './types'
 
 let deviceCache: DeviceInfo | null = null
+let currentNetworkType = ''
+
+// 异步监听网络状态保持最新
+try {
+	if (typeof uni !== 'undefined' && uni.getNetworkType) {
+		uni.getNetworkType({
+			success(res) {
+				currentNetworkType = res.networkType || ''
+				if (deviceCache) {
+					deviceCache.networkType = currentNetworkType
+				}
+			}
+		})
+		if (uni.onNetworkStatusChange) {
+			uni.onNetworkStatusChange((res) => {
+				currentNetworkType = res.networkType || ''
+				if (deviceCache) {
+					deviceCache.networkType = currentNetworkType
+				}
+			})
+		}
+	}
+} catch {}
 
 /**
- * 采集设备信
+ * 采集设备信息
  * @returns 设备参数集
  */
 export function getDevice(): DeviceInfo {
 	if (deviceCache) return deviceCache
-	const deviceRaw = uni.getDeviceInfo()
-	const windowRaw = uni.getWindowInfo()
-	const appRaw = uni.getAppBaseInfo()
+	const deviceRaw = uni.getDeviceInfo ? uni.getDeviceInfo() : ({} as any)
+	const windowRaw = uni.getWindowInfo ? uni.getWindowInfo() : ({} as any)
+	const appRaw = uni.getAppBaseInfo ? uni.getAppBaseInfo() : ({} as any)
 	const system = deviceRaw.system || ''
 
 	deviceCache = {
-		appid: uni.getAccountInfoSync().miniProgram.appId,
+		appid: uni.getAccountInfoSync ? uni.getAccountInfoSync().miniProgram?.appId || '' : '',
 		appName: appRaw.appName || '',
 		version: appRaw.appVersion || '',
 		versionCode: appRaw.appVersionCode || '',
@@ -36,9 +59,13 @@ export function getDevice(): DeviceInfo {
 		hostName: appRaw.hostName || '',
 		hostVersion: appRaw.hostVersion || '',
 		hostLanguage: appRaw.hostLanguage || '',
-		hostTheme: appRaw.hostTheme || '',
+		hostTheme: appRaw.hostTheme || (appRaw as any).theme || '',
 		platform: deviceRaw.platform || '',
-		language: appRaw.language || ''
+		language: appRaw.language || '',
+		networkType: currentNetworkType,
+		benchmarkLevel: (deviceRaw as any).benchmarkLevel ?? -1,
+		theme: (appRaw as any).theme || (appRaw as any).hostTheme || '',
+		fontSizeSetting: (windowRaw as any).fontSizeSetting || 16
 	}
 	return deviceCache
 }
