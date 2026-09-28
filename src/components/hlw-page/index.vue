@@ -125,7 +125,36 @@ const props = defineProps({
 
 const emit = defineEmits(["scrolltolower"]);
 
-const title = computed(() => props.title);
+function getAutoTitle(): string {
+    try {
+        const pages = getCurrentPages();
+        if (!pages || !pages.length) return "";
+        const currentPage = pages[pages.length - 1] as any;
+        if (!currentPage) return "";
+
+        // 1. 优先读取 url query 中传入的 title
+        if (currentPage.options?.title) {
+            return decodeURIComponent(currentPage.options.title);
+        }
+
+        // 2. 根据当前页面路由匹配首页菜单标题
+        const rawRoute = currentPage.route || currentPage.__route__ || "";
+        const cleanRoute = rawRoute.replace(/^\//, "").split("?")[0];
+        if (cleanRoute) {
+            const menuTitles = uni.getStorageSync("hlw_menu_titles");
+            if (menuTitles && typeof menuTitles === "object" && menuTitles[cleanRoute]) {
+                return menuTitles[cleanRoute];
+            }
+        }
+
+        // 3. 兜底读取 pages.json 中的原生页面标题
+        const metaTitle = currentPage.$page?.meta?.navigationBar?.titleText;
+        if (metaTitle) return metaTitle;
+    } catch {}
+    return "";
+}
+
+const title = computed(() => props.title || getAutoTitle());
 
 const hasSafeArea = computed(() => {
     if (props.safeArea !== undefined) return props.safeArea;
