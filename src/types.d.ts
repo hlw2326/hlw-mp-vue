@@ -3,32 +3,26 @@ import type {
     showPopupAd,
     showRewardAd,
     playRewardAd,
-    getAdUnitId,
-    setupAd,
 } from "./utils/ad";
 
 /**
  * 广告门面型
  */
 export interface HlwAdInstance {
-    /** 展示插屏广 */
+    /** 展示插屏广告 */
     showPopup: typeof showPopupAd;
-    /** 播放激励广 */
+    /** 播放激励广告 */
     showReward: typeof showRewardAd;
-    /** 播放激励流 */
+    /** 播放激励流程 */
     playReward: typeof playRewardAd;
-    /** 获取单元号 */
-    getUnitId: typeof getAdUnitId;
-    /** 注入广告源 */
-    setup: typeof setupAd;
 }
 
 /**
  * 全局实例型
  */
 export interface HlwInstance {
-    /** 统一提示管 */
+    /** 统一提示管理 */
     $msg: ReturnType<typeof useMsg>;
-    /** 统一广告管 */
+    /** 统一广告管理 */
     $ad: HlwAdInstance;
 }

@@ -3,76 +3,11 @@
  * 提供插屏广告 (Interstitial Ad) 与激励视频广告 (Rewarded Video Ad) 的注册、缓存与展示能力。
  */
 
-import { computed, type ComputedRef } from "vue";
-
 declare const uni: any;
 
-import type { AdConfig, AdConfigProvider, AdRes } from "./types";
+import type { AdRes } from "./types";
 
-export type { AdConfig, AdConfigProvider, AdRes };
-
-let currentAdConfigProvider: AdConfigProvider | null = null;
-
-/**
- * 配置广告源
- * @param provider 广告配置源
- */
-export function setupAd(provider: AdConfigProvider | AdConfig): void {
-    if (typeof provider === "function") {
-        currentAdConfigProvider = provider;
-    } else {
-        currentAdConfigProvider = () => provider;
-    }
-}
-
-/**
- * 读取广告配
- * @returns 广告配置项
- */
-export function getAdConfig(): AdConfig {
-    if (currentAdConfigProvider) {
-        return currentAdConfigProvider() || {};
-    }
-    try {
-        const saved = uni.getStorageSync("config");
-        if (saved?.ad) return saved.ad;
-    } catch {}
-    return {};
-}
-
-/**
- * 解析单元号
- * @param type 广告类型值
- * @returns 广告单元码
- */
-export function getAdUnitId(type: "banner" | "grid" | "custom" | "video" | "reward" | "popup" = "custom"): string {
-    const config = getAdConfig();
-    if (config.enabled === false) return "";
-
-    const unit = config[type];
-    if (!unit || unit.enabled === false) return "";
-    return unit.unitId || "";
-}
-
-/**
- * 组合式广告
- */
-export function useAd() {
-    const bannerUnitId: ComputedRef<string> = computed(() => getAdUnitId("banner"));
-    const gridUnitId: ComputedRef<string> = computed(() => getAdUnitId("grid"));
-    const customUnitId: ComputedRef<string> = computed(() => getAdUnitId("custom"));
-    const rewardUnitId: ComputedRef<string> = computed(() => getAdUnitId("reward"));
-    const popupUnitId: ComputedRef<string> = computed(() => getAdUnitId("popup"));
-
-    return {
-        bannerUnitId,
-        gridUnitId,
-        customUnitId,
-        rewardUnitId,
-        popupUnitId,
-        getUnitId: getAdUnitId,
-    };
-}
+export type { AdRes };
 
 // 缓存不同 Unit ID 的广告实例，防止重复创建导致内存泄露或回调叠加
 const adInstances = new Map<string, any>();
@@ -97,9 +32,11 @@ function resolveReward(res: AdRes) {
     rewardPromise = null;
 }
 
-// 配置插屏广告
+/**
+ * 配置插屏广告
+ */
 export function setPopupAd(adId?: string, done?: (ok: boolean) => void): boolean {
-    const targetId = adId || getAdUnitId("popup");
+    const targetId = adId || activePopupId;
     popupCallback = done;
     if (!targetId) return false;
 
@@ -124,13 +61,21 @@ export function setPopupAd(adId?: string, done?: (ok: boolean) => void): boolean
     return true;
 }
 
-// 展示插屏广告
-export function showPopupAd(delay = 0, unitId?: string): Promise<boolean> {
-    const config = getAdConfig();
-    const isGlobalEnabled = config.adGlobalEnabled === undefined || config.adGlobalEnabled === 1 || config.adGlobalEnabled === true;
-    if (!isGlobalEnabled) return Promise.resolve(false);
+/**
+ * 展示插屏广告
+ */
+export function showPopupAd(arg1?: string | number, arg2?: string | number): Promise<boolean> {
+    let unitId = "";
+    let delay = 0;
+    if (typeof arg1 === "string") {
+        unitId = arg1;
+        delay = typeof arg2 === "number" ? arg2 : 0;
+    } else if (typeof arg1 === "number") {
+        delay = arg1;
+        unitId = typeof arg2 === "string" ? arg2 : "";
+    }
 
-    const targetId = unitId || getAdUnitId("popup") || activePopupId;
+    const targetId = unitId || activePopupId;
     if (!targetId) return Promise.resolve(false);
 
     if (!setPopupAd(targetId)) {
@@ -165,9 +110,11 @@ export function showPopupAd(delay = 0, unitId?: string): Promise<boolean> {
     });
 }
 
-// 配置激励广告
+/**
+ * 配置激励广告
+ */
 export function setRewardAd(adId?: string, done?: (res: AdRes) => void): Promise<AdRes> {
-    const targetId = adId || getAdUnitId("reward");
+    const targetId = adId || activeRewardId;
     rewardCallback = done;
     rewardPromise = new Promise((resolve) => {
         rewardResolve = resolve;
@@ -207,11 +154,13 @@ export function setRewardAd(adId?: string, done?: (res: AdRes) => void): Promise
     return rewardPromise;
 }
 
-// 播放激励广告
+/**
+ * 播放激励广告
+ */
 export function showRewardAd(options?: { unitId?: string; onShowSuccess?: () => void } | (() => void)): Promise<AdRes> {
     const onShowSuccess = typeof options === "function" ? options : options?.onShowSuccess;
     const unitId = typeof options === "object" ? options?.unitId : undefined;
-    const targetId = unitId || activeRewardId || getAdUnitId("reward");
+    const targetId = unitId || activeRewardId;
 
     if (!targetId) {
         return Promise.resolve({ success: false, isEnded: false });
@@ -252,8 +201,10 @@ export function showRewardAd(options?: { unitId?: string; onShowSuccess?: () => 
     return current;
 }
 
-// 销毁广告实例
-export function destroyRewardAd(adId: string) {
+/**
+ * 销毁广告实例
+ */
+export function destroyRewardAd(adId: string): void {
     adInstances.delete(adId);
     if (activeRewardId === adId) {
         activeRewardId = "";
@@ -263,7 +214,9 @@ export function destroyRewardAd(adId: string) {
     }
 }
 
-// 确认继续观看
+/**
+ * 确认继续观看
+ */
 export function confirmRewardAd(): Promise<boolean> {
     return new Promise((resolve) => {
         uni.showModal({
@@ -283,10 +236,12 @@ export function confirmRewardAd(): Promise<boolean> {
     });
 }
 
-// 播放激励流程
+/**
+ * 播放激励流程
+ */
 export async function playRewardAd(options: { unitId?: string; retryConfirm?: boolean } = {}): Promise<AdRes> {
     const { unitId, retryConfirm = true } = options;
-    const targetId = unitId || getAdUnitId("reward");
+    const targetId = unitId || activeRewardId;
     if (!targetId) {
         return { success: false, isEnded: false };
     }
@@ -327,5 +282,3 @@ export async function playRewardAd(options: { unitId?: string; retryConfirm?: bo
         return { success: false, isEnded: false, error };
     }
 }
-
-

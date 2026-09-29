@@ -28,15 +28,15 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { getAdUnitId, getAdConfig, playRewardAd } from "../../utils/ad";
-import type { HlwAdType, HlwGridPlacement, HlwRewardAdResult } from "./types";
+import { playRewardAd } from "../../utils/ad";
+import type { HlwAdType, HlwGridPlacement } from "./types";
 
-defineOptions({ name: "HlwAd" });
+defineOptions({ name: "HlwAdBase" });
 
 interface Props {
     /** 广告类型 */
     type?: HlwAdType;
-    /** 单元标识 */
+    /** 广告单元标识 */
     unitId?: string;
     /** 悬浮定位 */
     placement?: HlwGridPlacement;
@@ -50,7 +50,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
     type: "custom",
-    unitId: undefined,
+    unitId: "",
     placement: "center",
     customClass: "",
     customStyle: "",
@@ -65,19 +65,7 @@ const emit = defineEmits<{
 
 const isClicked = ref(false);
 
-const finalUnitId = computed(() => {
-    const config = getAdConfig();
-    const isGlobalEnabled = config.adGlobalEnabled === undefined || config.adGlobalEnabled === 1 || config.adGlobalEnabled === true;
-    if (!isGlobalEnabled) return "";
-
-    // 显式传参
-    if (props.unitId !== undefined) {
-        return props.unitId.trim();
-    }
-    // 全局配置
-    return getAdUnitId(props.type);
-});
-
+const finalUnitId = computed(() => (props.unitId || "").trim());
 const isReady = computed(() => !!finalUnitId.value);
 
 function onLoad(event: unknown): void {
