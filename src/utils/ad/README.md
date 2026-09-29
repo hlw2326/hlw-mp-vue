@@ -1,10 +1,10 @@
 # 广告模块 (Ad Utility & Component)
 
-提供微信小程序**插屏广告 (Interstitial Ad)** 与 **激励视频广告 (Rewarded Video Ad)** 的注册、预加载与展示播放能力，并提供了开箱即用的高层封装组件 `<hlw-ad>`。
+提供微信小程序**插屏广告 (Interstitial Ad)** 与 **激励视频广告 (Rewarded Video Ad)** 的注册、预加载与展示播放能力，并提供了开箱即用的基础组件 `<hlw-ad-base>`。
 
 ---
 
-## 1. 推荐：高层组件 `<hlw-ad type="reward">`
+## 1. 推荐：基础组件 `<hlw-ad-base type="reward">`
 
 组件内部全面封装并接管了激励视频广告的完整生命周期管理：
 * **自动读取全局配置**：无需显式传递 `unit-id`，底层自动匹配全局广告配置。
@@ -16,9 +16,9 @@
 
 ```html
 <template>
-    <hlw-ad type="reward" @close="handleRewardAd">
+    <hlw-ad-base type="reward" @close="handleRewardAd">
         <button class="btn">点击观看广告获取金币</button>
-    </hlw-ad>
+    </hlw-ad-base>
 </template>
 
 <script setup lang="ts">

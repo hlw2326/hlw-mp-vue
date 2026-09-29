@@ -13,7 +13,6 @@ export * from "./hlw";
 export * from "./directives";
 
 // 组件导出
-export { default as HlwAd } from "./components/hlw-ad/index.vue";
 export { default as HlwAdBase } from "./components/hlw-ad-base/index.vue";
 
 // 组件类型定义
