@@ -33,7 +33,7 @@ export interface ModalOptions {
     /** 弹窗标题文 */
     title?: string;
     /** 弹窗内容文 */
-    content: string;
+    content?: string;
     /** 确认按钮字 */
     confirmText?: string;
     /** 取消按钮字 */
