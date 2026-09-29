@@ -3,6 +3,7 @@ import type {
     ToastDuration,
     ToastOptions,
     ModalOptions,
+    IModal,
     HlwMsg,
 } from "./types";
 
@@ -11,6 +12,7 @@ export type {
     ToastDuration,
     ToastOptions,
     ModalOptions,
+    IModal,
     HlwMsg,
 };
 

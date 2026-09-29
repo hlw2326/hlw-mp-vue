@@ -46,6 +46,8 @@ export interface ModalOptions {
     showCancel?: boolean;
 }
 
+export type IModal = ModalOptions;
+
 /**
  * 消息门面体
  */
