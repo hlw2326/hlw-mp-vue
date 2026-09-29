@@ -1,21 +1,20 @@
+export interface AdUnitConfig {
+    enabled?: boolean;
+    unitId?: string;
+}
+
 /**
  * 广告配置表
  */
 export interface AdConfig {
-    adGlobalEnabled?: number | boolean;
-    adEnabledBanner?: number | boolean;
-    adEnabledGrid?: number | boolean;
-    adEnabledCustom?: number | boolean;
-    adEnabledVideo?: number | boolean;
-    adEnabledReward?: number | boolean;
-    adEnabledPopup?: number | boolean;
-    bannerUnitId?: string;
-    gridUnitId?: string;
-    customUnitId?: string;
-    videoUnitId?: string;
-    rewardUnitId?: string;
-    popupUnitId?: string;
-    vipNoAd?: number | boolean;
+    enabled?: boolean;
+    banner?: AdUnitConfig;
+    grid?: AdUnitConfig;
+    custom?: AdUnitConfig;
+    video?: AdUnitConfig;
+    reward?: AdUnitConfig;
+    popup?: AdUnitConfig;
+    vipNoAd?: boolean;
     [key: string]: any;
 }
 

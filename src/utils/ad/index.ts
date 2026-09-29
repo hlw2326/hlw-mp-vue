@@ -47,38 +47,11 @@ export function getAdConfig(): AdConfig {
  */
 export function getAdUnitId(type: "banner" | "grid" | "custom" | "video" | "reward" | "popup" = "custom"): string {
     const config = getAdConfig();
-    const isGlobalEnabled = config.adGlobalEnabled === undefined || config.adGlobalEnabled === 1 || config.adGlobalEnabled === true;
-    if (!isGlobalEnabled) return "";
+    if (config.enabled === false) return "";
 
-    switch (type) {
-        case "banner": {
-            const enabled = config.adEnabledBanner === undefined || config.adEnabledBanner === 1 || config.adEnabledBanner === true;
-            return enabled ? (config.bannerUnitId || "") : "";
-        }
-        case "grid": {
-            const enabled = config.adEnabledGrid === undefined || config.adEnabledGrid === 1 || config.adEnabledGrid === true;
-            return enabled ? (config.gridUnitId || "") : "";
-        }
-        case "custom": {
-            const enabled = config.adEnabledCustom === undefined || config.adEnabledCustom === 1 || config.adEnabledCustom === true;
-            return enabled ? (config.customUnitId || "") : "";
-        }
-
-        case "reward": {
-            const enabled = config.adEnabledReward === undefined || config.adEnabledReward === 1 || config.adEnabledReward === true;
-            return enabled ? (config.rewardUnitId || "") : "";
-        }
-        case "popup": {
-            const enabled = config.adEnabledPopup === undefined || config.adEnabledPopup === 1 || config.adEnabledPopup === true;
-            return enabled ? (config.popupUnitId || "") : "";
-        }
-        case "video": {
-            const enabled = config.adEnabledVideo === undefined || config.adEnabledVideo === 1 || config.adEnabledVideo === true;
-            return enabled ? (config.videoUnitId || "") : "";
-        }
-        default:
-            return "";
-    }
+    const unit = config[type];
+    if (!unit || unit.enabled === false) return "";
+    return unit.unitId || "";
 }
 
 /**

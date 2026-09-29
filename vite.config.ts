@@ -10,6 +10,7 @@ export default defineConfig({
       include: ['src/**/*.ts', 'src/**/*.d.ts', 'src/**/*.vue'],
       tsconfigPath: './tsconfig.json',
       entryRoot: 'src',
+      copyDtsFiles: true,
     }),
   ],
   resolve: {
