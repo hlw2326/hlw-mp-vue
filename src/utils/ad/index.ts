@@ -33,16 +33,26 @@ function resolveReward(res: AdRes) {
 }
 
 /**
- * 配置插屏广告
+ * 在当前页面上下文中初始化插屏广告（销毁旧实例并重建，确保广告归属当前页面）
  */
-export function setPopupAd(adId?: string, done?: (ok: boolean) => void): boolean {
+export function initPopupAd(adId?: string): any {
     const targetId = adId || activePopupId;
-    popupCallback = done;
-    if (!targetId) return false;
-
+    if (!targetId) return null;
     activePopupId = targetId;
-    if (!adInstances.has(targetId)) {
+
+    // 销毁跨页面遗留的旧实例，杜绝 2005 报错
+    const oldAd = adInstances.get(targetId);
+    if (oldAd) {
         try {
+            oldAd.destroy?.();
+        } catch {
+            // ignore
+        }
+        adInstances.delete(targetId);
+    }
+
+    try {
+        if (typeof uni !== "undefined" && typeof uni.createInterstitialAd === "function") {
             const ad = uni.createInterstitialAd({ adUnitId: targetId });
             ad.onLoad?.(() => console.log(`[Ad] Interstitial loaded: ${targetId}`));
             ad.onError?.((error: any) => {
@@ -53,10 +63,25 @@ export function setPopupAd(adId?: string, done?: (ok: boolean) => void): boolean
                 if (activePopupId === targetId) popupCallback?.(true);
             });
             adInstances.set(targetId, ad);
-        } catch (error) {
-            console.error("[Ad] Interstitial creation failed:", error);
-            return false;
+            return ad;
         }
+    } catch (error) {
+        console.error("[Ad] Interstitial creation failed:", error);
+    }
+    return null;
+}
+
+/**
+ * 配置插屏广告
+ */
+export function setPopupAd(adId?: string, done?: (ok: boolean) => void): boolean {
+    const targetId = adId || activePopupId;
+    popupCallback = done;
+    if (!targetId) return false;
+
+    activePopupId = targetId;
+    if (!adInstances.has(targetId)) {
+        return !!initPopupAd(targetId);
     }
     return true;
 }
@@ -97,7 +122,25 @@ export function showPopupAd(arg1?: string | number, arg2?: string | number): Pro
 
         const executeShow = () => {
             ad.show().catch((error: any) => {
-                console.error("[Ad] Interstitial show error:", error);
+                // 遇到 2005 跨页面调用错误时，自动在当前活跃页面重新初始化并静默重试一次
+                const isPageError = error && (error.errCode === 2005 || error.errCode === "2005" || String(error.errMsg || "").includes("并非当前页面调用"));
+                if (isPageError) {
+                    try {
+                        const newAd = initPopupAd(targetId);
+                        if (newAd) {
+                            newAd.show().then(() => {
+                                popupCallback?.(true);
+                            }).catch((e: any) => {
+                                console.warn("[Ad] Interstitial retry error:", e);
+                                popupCallback?.(false);
+                            });
+                            return;
+                        }
+                    } catch {
+                        // ignore
+                    }
+                }
+                console.warn("[Ad] Interstitial show failed:", error);
                 popupCallback?.(false);
             });
         };
