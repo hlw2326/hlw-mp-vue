@@ -110,6 +110,9 @@ export interface AliossUploadSign extends UploadSignBase {
 	policy: string
 	Signature: string
 	success_action_status: string
+	oSSAccessKeyId?: string
+	signature?: string
+	successActionStatus?: string
 }
 
 /**

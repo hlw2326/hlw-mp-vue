@@ -40,12 +40,13 @@ function buildFormData(cred: UploadSign): Record<string, string> {
         return { key: cred.key };
     }
     if (cred.type === 'alioss') {
+        const anyCred = cred as any;
         return {
             key: cred.key,
             policy: cred.policy,
-            OSSAccessKeyId: cred.OSSAccessKeyId,
-            Signature: cred.Signature,
-            success_action_status: cred.success_action_status,
+            OSSAccessKeyId: cred.OSSAccessKeyId || anyCred.oSSAccessKeyId || anyCred.ossAccessKeyId || '',
+            Signature: cred.Signature || anyCred.signature || '',
+            success_action_status: cred.success_action_status || anyCred.successActionStatus || '200',
         };
     }
     return {
