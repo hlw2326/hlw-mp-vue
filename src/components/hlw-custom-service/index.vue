@@ -39,10 +39,10 @@ import { computed } from "vue";
 defineOptions({ name: "HlwCustomService" });
 
 interface ContactConfig {
-    sendMessageTitle?: string;
-    sendMessagePath?: string;
-    sendMessageImg?: string;
-    showMessageCard?: boolean;
+    title?: string;
+    path?: string;
+    image?: string;
+    card?: boolean;
 }
 
 const props = withDefaults(
@@ -65,10 +65,10 @@ const resolvedBtnTitle = computed(() => {
 const resolvedContact = computed(() => {
     const c = props.contact || {};
     return {
-        title: c.sendMessageTitle ?? "",
-        path: c.sendMessagePath ?? "",
-        img: c.sendMessageImg ?? "",
-        show: c.showMessageCard ?? false,
+        title: c.title ?? "",
+        path: c.path ?? "",
+        img: c.image ?? "",
+        show: c.card ?? false,
     };
 });
 </script>
