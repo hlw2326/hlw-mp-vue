@@ -32,6 +32,9 @@
             <slot name="bottom"></slot>
             <view v-if="hasSafeArea" class="safe-area-bottom"></view>
         </view>
+
+        <!-- 全局弹窗/遮罩层插槽 (脱离 scroll-view 滚动与局部层叠上下文) -->
+        <slot name="modal"></slot>
     </view>
 </template>
 

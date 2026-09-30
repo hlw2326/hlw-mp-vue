@@ -6,6 +6,8 @@
     justify-content: center;
     background: rgba(15, 23, 42, 0.52);
     z-index: 1000;
+    box-sizing: border-box;
+    padding: calc(env(safe-area-inset-top, 20px) + 24rpx) 24rpx calc(env(safe-area-inset-bottom, 20px) + 24rpx);
     animation: hlw-fade-in 0.2s;
 }
 
@@ -13,6 +15,9 @@
     position: relative;
     width: 80%;
     max-width: 600rpx;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
     background: var(--surface-card, #ffffff);
     border-radius: var(--radius-xl, 28rpx);
     overflow: hidden;
@@ -65,6 +70,10 @@
 }
 
 .hlw-modal-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     font-size: var(--font-sm, 26rpx);
     color: var(--text-secondary, #475569);
     text-align: center;
