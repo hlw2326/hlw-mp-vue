@@ -82,7 +82,7 @@ export function useMsg(): HlwMsg {
     /**
      * 弹出确认窗
      */
-    function modal(opts: ModalOptions): Promise<boolean> {
+    function modal(opts: ModalOptions = {}): Promise<boolean> {
         return new Promise((resolve) => {
             const {
                 title = "提示",
@@ -92,7 +92,7 @@ export function useMsg(): HlwMsg {
                 confirmColor = "#3b82f6",
                 cancelColor = "#999999",
                 showCancel = true,
-            } = opts;
+            } = opts || {};
             uni.showModal({
                 title,
                 content,

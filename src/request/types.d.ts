@@ -1,4 +1,5 @@
 import type { DeviceInfo } from '../utils/device/types'
+import type { ModalOptions } from '../composables/msg/types'
 
 /**
  * 请求配置项
@@ -33,6 +34,16 @@ export interface InterceptorHandler<T> {
 }
 
 /**
+ * 接口业务数据扩展标记（供各业务项目通过声明合并自由扩展）
+ */
+export interface ApiResData {
+	/**
+	 * 模态弹窗配置
+	 */
+	modal?: ModalOptions
+}
+
+/**
  * 接口响应表
  */
 export interface ApiRes<T = any> {
@@ -47,7 +58,11 @@ export interface ApiRes<T = any> {
 	/**
 	 * 数据业务体
 	 */
-	data: T
+	data: T & ApiResData
+	/**
+	 * 是否弹窗提示
+	 */
+	modal?: boolean
 }
 
 /**

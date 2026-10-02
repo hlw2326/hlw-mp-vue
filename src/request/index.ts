@@ -335,5 +335,5 @@ export const client = new Proxy({} as UniHttpClient, {
 })
 
 export * from './oss'
-export type { RequestConfig, AxiosResponse, InterceptorHandler, ApiRes, HttpOptions } from './types'
+export type { RequestConfig, AxiosResponse, InterceptorHandler, ApiRes, ApiResData, HttpOptions } from './types'
 export * from './upload'
